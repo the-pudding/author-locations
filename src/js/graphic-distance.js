@@ -1,21 +1,54 @@
 /* global d3 */
+import scrollama from 'scrollama';
 import loadData from './load-data';
 import './pudding-chart/arc-histogram';
 
-const $section = d3.select('[data-js="distance"');
-const $figure = $section.select('[data-js="distance__figure"');
+const $section = d3.select('[data-js="distance"]');
+const $figure = $section.select('[data-js="distance__figure"]');
+const $article = $section.select('[data-js="distance__article"]');
+const $step = $article.selectAll('[data-js="article__step"]');
 
-const BIN_SIZE = 10;
+const scroller = scrollama();
+let binSize = 0;
 
 let chart = null;
 
-function resize() {}
+function updateDimensions() {
+  binSize = $section.node().offsetWidth < 960 ? 20 : 10;
+  const stepH = Math.floor(window.innerHeight * 0.75);
+  $step.style('height', `${stepH}px`);
+  $step.style('margin-top', (d, i) =>
+    i === 0 ? `${-window.innerHeight * 0.5}px` : 0
+  );
+
+  // const figureH = $figure.node().offsetHeight;
+  // const figureMarginTop = (window.innerHeight - figureHeight) / 2
+
+  // figure
+  // 	.style('height', figureHeight + 'px')
+  // 	.style('top', figureMarginTop + 'px');
+}
+
+function resize() {
+  updateDimensions();
+  scroller.resize();
+}
+
+function handleStepEnter({ index }) {
+  $step.classed('is-active', (d, i) => i === index);
+  if (index === 0)
+    chart.filter(d => ['White Teeth'].includes(d.book_title)).render();
+  if (index === 1)
+    chart.filter(d => ['White Teeth', '2666'].includes(d.book_title)).render();
+  if (index === 2) chart.filter(d => true).render();
+}
 
 function cleanData(data) {
   const clean = data.map(d => ({
     ...d,
     distance: +d.distance,
-    bin: Math.floor(+d.distance / BIN_SIZE),
+    bin: Math.floor(+d.distance / binSize),
+    top: d.book_title === 'White Teeth',
   }));
 
   const nested = d3
@@ -24,7 +57,7 @@ function cleanData(data) {
     .rollup(values => {
       const setting = values.map(d => d.setting);
       const residence = values.map(d => d.residence);
-      const { book_title, author_name, distance, bin } = values[0];
+      const { book_title, author_name, distance, bin, top } = values[0];
       return {
         book_title,
         author_name,
@@ -32,6 +65,7 @@ function cleanData(data) {
         setting,
         residence,
         bin,
+        top,
       };
     })
     .entries(clean)
@@ -41,7 +75,19 @@ function cleanData(data) {
   return nested;
 }
 
+function setupScroller() {
+  scroller
+    .setup({
+      step: '#distance article .step',
+      offset: 0.33,
+      debug: false,
+    })
+    .onStepEnter(handleStepEnter);
+}
+
 function setup(data) {
+  updateDimensions();
+
   const clean = cleanData(data);
   const maxBin = d3.max(
     d3
@@ -50,19 +96,10 @@ function setup(data) {
       .entries(clean),
     d => d.values.length
   );
-  chart = $figure
-    .datum(clean)
-    .puddingChartArcHistogram({ binSize: BIN_SIZE, maxBin });
+  chart = $figure.datum(clean).puddingChartArcHistogram({ binSize, maxBin });
   chart.resize();
-  setTimeout(() => {
-    chart.filter(d => ['White Teeth'].includes(d.book_title)).render();
-  }, 1000);
-  setTimeout(() => {
-    chart.filter(d => ['White Teeth', '2666'].includes(d.book_title)).render();
-  }, 5000);
-  setTimeout(() => {
-    chart.filter(d => true).render();
-  }, 10000);
+  setupScroller();
+  resize();
 }
 
 function init() {

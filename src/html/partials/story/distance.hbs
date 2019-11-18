@@ -1,8 +1,8 @@
 <section id='distance' data-js='distance'>
 	<figure data-js='distance__figure'></figure>
-	<article>
+	<article data-js='distance__article'>
 		{{#each doc.distance}}
-			<div class='step' data-step='{{step}}'>
+			<div class='step' data-js='article__step' data-step='{{step}}'>
 				<p>{{{text}}}</p>
 			</div>
 		{{/each}}

@@ -31,13 +31,14 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     let marginLeft = 0;
     let marginRight = 0;
     let rectHeight = 0;
-    const SPLIT = 0.25;
+    let offY = 0;
+    const SPLIT = 0.35;
+    const DUR = 1000;
 
     // scales
     const scaleArcX = d3.scaleLinear();
     const scaleArcY = d3.scaleLinear();
     const scaleHistX = d3.scaleBand();
-    const scaleHistY = d3.scaleLinear();
 
     // helper functions
     function makeArc({ distance }) {
@@ -73,7 +74,10 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     function enterHist(e) {
       const $book = e.append('g').attr('class', 'book');
 
-      $book.attr('transform', (d, i) => `translate(0, ${-rectHeight})`);
+      $book
+        .attr('transform', (d, i) => `translate(0, ${i * rectHeight + offY})`)
+        .style('opacity', 0);
+
       $book
         .append('rect')
         .attr('x', 0)
@@ -99,7 +103,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         scaleArcX.domain(extentX).nice();
         scaleArcY.domain(extentX).nice();
 
-        const binX = d3.range(0, scaleArcX.domain()[1], 10);
+        const binX = d3.range(0, scaleArcX.domain()[1], binSize);
         scaleHistX.domain(binX);
       },
       // on resize, update new dimensions
@@ -120,6 +124,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         marginRight = marginLeft;
 
         rectHeight = Math.floor(((1 - SPLIT) * height - SPACER) / maxBin);
+        offY = SPLIT * height + SPACER;
 
         return Chart;
       },
@@ -129,10 +134,16 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         $vis.attr('transform', `translate(${marginLeft}, ${MARGIN_TOP})`);
 
         const filteredData = data.filter(filter);
+
         const nestedData = d3
           .nest()
           .key(d => d.bin)
           .entries(filteredData);
+
+        // sort
+        nestedData.forEach(n => {
+          n.values.sort((a, b) => d3.descending(a.top, b.top));
+        });
 
         const $arcBook = $vis
           .select('.arc')
@@ -144,7 +155,8 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
           .select('path')
           .attr('transform', () => `translate(0, ${scaleArcY.range()[1]})`)
           .transition()
-          .duration(500)
+          .delay((d, i) => (filteredData.length > 2 ? d.bin * 20 : 0))
+          .duration(DUR)
           .ease(d3.easeCubicInOut)
           .attr('stroke-dashoffset', 0);
 
@@ -170,14 +182,13 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
           .attr('width', scaleHistX.bandwidth())
           .attr('height', rectHeight);
 
-        const oY = SPLIT * height + SPACER;
-
         $histBook
           .transition()
-          .duration(500)
-          .delay((d, i) => i * 0)
+          .duration(DUR)
+          .delay((d, i) => (filteredData.length > 2 ? d.bin * 20 : 0))
           .ease(d3.easeCubicInOut)
-          .attr('transform', (d, i) => `translate(0, ${i * rectHeight + oY})`);
+          .attr('transform', (d, i) => `translate(0, ${i * rectHeight + offY})`)
+          .style('opacity', 1);
 
         return Chart;
       },
