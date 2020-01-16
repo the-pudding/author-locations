@@ -3,6 +3,7 @@ import debounce from 'lodash.debounce';
 import isMobile from './utils/is-mobile';
 import footer from './footer';
 import Distance from './graphic-distance';
+import Timeline from './graphic-timeline';
 
 const $body = d3.select('body');
 let previousWidth = 0;
@@ -38,7 +39,8 @@ function init() {
   // setup sticky header menu
   setupStickyHeader();
   // kick off graphic code
-  Distance.init();
+  // Distance.init();
+  Timeline.init();
   // load footer stories
   // footer.init();
 }
