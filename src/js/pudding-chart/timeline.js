@@ -7,25 +7,27 @@
  4b. const chart = d3.select('.thing').datum(datum).puddingChartLine();
 */
 
-d3.selection.prototype.timeline = function init(options) {
+d3.selection.prototype.puddingChartTimeline = function init(options) {
     function createChart(el) {
         const $sel = d3.select(el);
         let data = $sel.datum();
+        const authors = data.filteredAuthors[0].values;
+        const books = data.filteredBooks[0].values;
         // dimension stuff
         let width = 0;
         let height = 0;
         const marginTop = 0;
         const marginBottom = 0;
-        const marginLeft = 0;
-        const marginRight = 0;
+        const marginLeft = 50;
+        const marginRight = 50;
 
         // scales
-        const scaleX = null;
+        const scaleX = d3.scaleLinear();
         const scaleY = null;
 
         // dom elements
         let $svg = null;
-        let $axis = null;
+        let $axes = null;
         let $vis = null;
 
         // helper functions
@@ -40,10 +42,15 @@ d3.selection.prototype.timeline = function init(options) {
                 $g.attr('transform', `translate(${marginLeft}, ${marginTop})`);
 
                 // create axis
-                $axis = $svg.append('g').attr('class', 'g-axis');
+                $axes = $svg.append('g').attr('class', 'g-axis');
 
                 // setup viz group
                 $vis = $g.append('g').attr('class', 'g-vis');
+
+                // find extent of data
+                const minYear = d3.min(authors, d => d.start_year);
+                const maxYear = d3.max(authors, d => d.end_year);
+                scaleX.domain([minYear, maxYear]).ticks(5);
 
                 Chart.resize();
                 Chart.render();
@@ -56,11 +63,24 @@ d3.selection.prototype.timeline = function init(options) {
                 $svg
                     .attr('width', width + marginLeft + marginRight)
                     .attr('height', height + marginTop + marginBottom);
+
+                scaleX.range([0, width]);
                 return Chart;
             },
             // update scales and render chart
             render() {
-                return Chart;
+                // setting up both underlying axes
+                $axes
+                    .append('g')
+                    .attr('class', 'author__axis')
+                    .attr('transform', `translate(0, ${height * 0.25})`)
+                    .call(d3.axisBottom(scaleX));
+
+                $axes
+                    .append('g')
+                    .attr('class', 'book__axis')
+                    .attr('transform', `translate(0, ${height * 0.75})`)
+                    .call(d3.axisBottom(scaleX));
             },
             // get / set data
             data(val) {
@@ -69,7 +89,7 @@ d3.selection.prototype.timeline = function init(options) {
                 $sel.datum(data);
                 Chart.render();
                 return Chart;
-            }
+            },
         };
         Chart.init();
 
