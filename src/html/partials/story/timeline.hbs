@@ -1,0 +1,10 @@
+<section id='timeline' data-js='timeline'>
+    {{#each doc.deep-dive}}
+    <div class='timeline__author'>
+        <h3 class='timeline__name'>{{{name}}}</h3>
+        <p class='timeline__lifespan'>{{{lifespan}}}</p>
+        <figure data-js='timeline__figure' data-author={{{slug}}}></figure>
+    </div>
+    {{/each}}
+
+</section>
