@@ -25,6 +25,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let nestedBooks = null;
     let topLine = null;
     let bottomLine = null;
+    const FONT_SIZE = 12;
 
     // scales
     const scaleX = d3.scaleLinear();
@@ -147,7 +148,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         const bookLocs = books.filter(d => d.match.length);
 
         $vis
-          .selectAll('connection__lived')
+          .selectAll('.connection__lived')
           .data(bookLocs)
           .join(enter => {
             enter
@@ -179,7 +180,72 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               });
           });
 
-        console.log({ bookLocs });
+        // add names above lived in places with matches
+        const matchedLocs = findUnique(bookLocs.map(d => d.match[0]));
+
+        $vis
+          .selectAll('.cities__lived')
+          .data(matchedLocs)
+          .join(enter => {
+            enter
+              .append('text')
+              .text(d => d.location)
+              .attr(
+                'transform',
+                d => `translate(${scaleX(d.mid)}, ${topLine - barHeight / 2})`
+              )
+              .attr('class', 'cities__lived')
+              .attr('text-anchor', 'middle')
+              .attr('alignment-baseline', 'bottom')
+              .style('font-size', FONT_SIZE);
+          });
+
+        // adding places never lived
+        const neverLocs = books.filter(d => !d.match.length);
+        const neverNest = d3
+          .nest()
+          .key(d => d.title)
+          .rollup(e => {
+            console.log({ e });
+            const mapped = e.map(f => {
+              console.log({ f });
+              return f.location;
+            });
+            return { locs: mapped, year: e[0].pub_year };
+          })
+          .entries(neverLocs);
+
+        const $gNever = $vis
+          .selectAll('.group__never')
+          .data(neverNest)
+          .join(enter => {
+            console.log({ enter });
+            const groups = enter
+              .append('g')
+              .attr('class', 'group__never')
+              .attr(
+                'transform',
+                d => `translate(${scaleX(d.value.year)}, ${bottomLine})`
+              );
+
+            return groups;
+          });
+
+        $gNever
+          .selectAll('.cities__never')
+          .data(d => {
+            return d.value.locs;
+          })
+          .join(enter => {
+            enter
+              .append('text')
+              .text(d => d)
+              .attr('class', 'cities__never')
+              .attr('text-anchor', 'middle')
+              .attr('transform', (d, i, n) => `translate(0, ${i * FONT_SIZE})`)
+              .attr('alignment-baseline', 'hanging')
+              .style('font-size', FONT_SIZE);
+          });
       },
       // get / set data
       data(val) {
