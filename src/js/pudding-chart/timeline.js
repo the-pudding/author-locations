@@ -23,6 +23,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     const barHeight = 20;
     const RADIUS = 6;
     let nestedBooks = null;
+    let topLine = null;
+    let bottomLine = null;
 
     // scales
     const scaleX = d3.scaleLinear();
@@ -34,6 +36,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let $vis = null;
 
     // helper functions
+    function findUnique(arr) {
+      return [...new Set(arr)];
+    }
 
     const Chart = {
       // called once at start
@@ -82,6 +87,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('height', height + marginTop + marginBottom);
 
         scaleX.range([0, width]);
+        topLine = height * 0.25;
+        bottomLine = height * 0.75;
         return Chart;
       },
       // update scales and render chart
@@ -90,16 +97,14 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $axes
           .append('g')
           .attr('class', 'author__axis')
-          .attr('transform', `translate(0, ${height * 0.25})`)
+          .attr('transform', `translate(0, ${topLine})`)
           .call(d3.axisBottom(scaleX));
 
         $axes
           .append('g')
           .attr('class', 'book__axis')
-          .attr('transform', `translate(0, ${height * 0.75})`)
+          .attr('transform', `translate(0, ${bottomLine})`)
           .call(d3.axisBottom(scaleX));
-
-        console.log({ authors });
 
         // add in author locations
         $vis
@@ -109,8 +114,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
             console.log({ check: scaleX(1898) });
             enter
               .append('rect')
+              .attr('class', 'author__location')
               .attr('x', d => scaleX(d.start_year))
-              .attr('y', height * 0.25 - barHeight / 2)
+              .attr('y', topLine - barHeight / 2)
               .attr('width', d => scaleX(d.end_year) - scaleX(d.start_year))
               .attr('height', barHeight);
           });
@@ -120,7 +126,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         const simulation = d3
           .forceSimulation(nestedBooks)
           .force('x', d3.forceX(d => scaleX(d.value.year)))
-          .force('y', d3.forceY(height * 0.75))
+          .force('y', d3.forceY(bottomLine))
           .force('collide', d3.forceCollide(RADIUS))
           .stop();
 
@@ -136,6 +142,44 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .attr('cy', d => d.y)
               .attr('r', RADIUS);
           });
+
+        // add connecting lines to places lived
+        const bookLocs = books.filter(d => d.match.length);
+
+        $vis
+          .selectAll('connection__lived')
+          .data(bookLocs)
+          .join(enter => {
+            enter
+              .append('path')
+              .attr('class', 'connection__lived')
+              .attr('d', d => {
+                const thisBook = scaleX(d.pub_year);
+                const thisLoc = scaleX(d.match[0].mid);
+                const padding = 10;
+                const starting = [thisLoc, topLine];
+                const ending = [thisBook, bottomLine];
+                const startControl = [thisLoc, height / 2 + padding];
+                const endControl = [thisBook, height / 2 - padding];
+
+                const path = [
+                  // move to starting point
+                  'M',
+                  starting,
+                  // add cubic bezier curve
+                  'C',
+                  startControl,
+                  endControl,
+                  // add end point
+                  ending,
+                ];
+
+                const joined = path.join(' ');
+                return joined;
+              });
+          });
+
+        console.log({ bookLocs });
       },
       // get / set data
       data(val) {

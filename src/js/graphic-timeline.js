@@ -7,11 +7,13 @@ const $figures = $section.selectAll('[data-js="timeline__figure"]');
 // const $step = $article.selectAll('[data-js="article__step"]');
 
 let allData = null;
+let authorLocs = null;
 
 function cleanBooks(data) {
   const clean = data.map(d => ({
     ...d,
     pub_year: +d.pub_year,
+    match: authorLocs.filter(e => e.location === d.location),
   }));
 
   const nested = d3
@@ -29,6 +31,12 @@ function cleanAuthors(data) {
     end_year: +d.end_year,
   }));
 
+  // create useful information for connecting lines later
+  authorLocs = clean.map(d => {
+    const mid = d3.mean([d.start_year, d.end_year]);
+    return { location: d.location, mid };
+  });
+
   const nested = d3
     .nest()
     .key(d => d.slug)
@@ -40,8 +48,6 @@ function cleanAuthors(data) {
 function setupTimelines() {
   const $sel = d3.select(this);
   const slug = $sel.attr('data-author');
-
-  console.log({ slug, allData });
 
   const filteredAuthors = allData.authors.filter(d => d.key === slug);
   const filteredBooks = allData.books.filter(d => d.key === slug);
