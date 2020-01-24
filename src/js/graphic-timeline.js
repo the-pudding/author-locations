@@ -8,11 +8,14 @@ const $figures = $section.selectAll('[data-js="timeline__figure"]');
 
 let allData = null;
 let authorLocs = null;
+let oldest = null;
+let birthYearMap = null;
 
 function cleanBooks(data) {
   const clean = data.map(d => ({
     ...d,
     pub_year: +d.pub_year,
+    pub_age: +d.pub_year - birthYearMap.get(d.slug),
     match: authorLocs.filter(e => e.location === d.location),
   }));
 
@@ -25,15 +28,33 @@ function cleanBooks(data) {
 }
 
 function cleanAuthors(data) {
+  const born = d3
+    .nest()
+    .key(d => d.slug)
+    .rollup(leaves => {
+      const years = leaves.map(e => +e.start_year);
+      return Math.min(...years);
+    })
+    .entries(data)
+    .map(d => [d.key, d.value]);
+
+  birthYearMap = new Map(born);
+  console.log({ birthYearMap });
+
   const clean = data.map(d => ({
     ...d,
     start_year: +d.start_year,
     end_year: +d.end_year,
+    start_age: +d.start_year - birthYearMap.get(d.slug),
+    end_age: +d.end_year - birthYearMap.get(d.slug),
   }));
+
+  // finding longest lifespan
+  oldest = Math.max(...clean.map(d => d.end_age));
 
   // create useful information for connecting lines later
   authorLocs = clean.map(d => {
-    const mid = d3.mean([d.start_year, d.end_year]);
+    const mid = d3.mean([d.start_age, d.end_age]);
     return { location: d.location, mid };
   });
 
@@ -52,7 +73,7 @@ function setupTimelines() {
   const filteredAuthors = allData.authors.filter(d => d.key === slug);
   const filteredBooks = allData.books.filter(d => d.key === slug);
 
-  const allFiltered = { filteredAuthors, filteredBooks };
+  const allFiltered = { filteredAuthors, filteredBooks, oldest };
 
   $sel.data([allFiltered]).puddingChartTimeline();
 }

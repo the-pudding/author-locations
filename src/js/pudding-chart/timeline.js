@@ -13,6 +13,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let data = $sel.datum();
     const authors = data.filteredAuthors[0].values;
     const books = data.filteredBooks[0].values;
+    const { oldest } = data;
     // dimension stuff
     let width = 0;
     let height = 0;
@@ -59,18 +60,15 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         // setup viz group
         $vis = $g.append('g').attr('class', 'g-vis');
 
-        // find extent of data
-        const minYear = d3.min(authors, d => d.start_year);
-        const maxYear = d3.max(authors, d => d.end_year);
-        scaleX.domain([minYear, maxYear]).ticks(5);
+        // put all authors on same x scale of age
+        scaleX.domain([0, oldest]).ticks(5);
 
         // nest locations by book
         nestedBooks = d3
           .nest()
           .key(d => d.title)
           .rollup(leaves => {
-            console.log({ leaves });
-            const pubYear = d3.max(leaves, d => d.pub_year);
+            const pubYear = d3.max(leaves, d => d.pub_age);
             return { values: leaves, year: pubYear };
           })
           .entries(books);
@@ -112,17 +110,15 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .selectAll('author__location')
           .data(authors)
           .join(enter => {
-            console.log({ check: scaleX(1898) });
             enter
               .append('rect')
               .attr('class', 'author__location')
-              .attr('x', d => scaleX(d.start_year))
+              .attr('x', d => scaleX(d.start_age))
               .attr('y', topLine - barHeight / 2)
-              .attr('width', d => scaleX(d.end_year) - scaleX(d.start_year))
+              .attr('width', d => scaleX(d.end_age) - scaleX(d.start_age))
               .attr('height', barHeight);
           });
 
-        console.log({ nestedBooks });
         // add in book releases (beeswarm to prevent overlap)
         const simulation = d3
           .forceSimulation(nestedBooks)
@@ -155,7 +151,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .append('path')
               .attr('class', 'connection__lived')
               .attr('d', d => {
-                const thisBook = scaleX(d.pub_year);
+                const thisBook = scaleX(d.pub_age);
                 const thisLoc = scaleX(d.match[0].mid);
                 const padding = 10;
                 const starting = [thisLoc, topLine];
@@ -206,12 +202,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .nest()
           .key(d => d.title)
           .rollup(e => {
-            console.log({ e });
             const mapped = e.map(f => {
-              console.log({ f });
               return f.location;
             });
-            return { locs: mapped, year: e[0].pub_year };
+            return { locs: mapped, year: e[0].pub_age };
           })
           .entries(neverLocs);
 
@@ -219,7 +213,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .selectAll('.group__never')
           .data(neverNest)
           .join(enter => {
-            console.log({ enter });
             const groups = enter
               .append('g')
               .attr('class', 'group__never')
