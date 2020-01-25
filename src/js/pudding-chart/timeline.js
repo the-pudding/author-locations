@@ -30,6 +30,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
     // scales
     const scaleX = d3.scaleLinear();
+    const scaleColor = d3.scaleOrdinal(d3.schemeSet1);
     const scaleY = null;
 
     // dom elements
@@ -39,7 +40,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
     // helper functions
     function findUnique(arr) {
-      return [...new Set(arr)];
+      const nonEmpty = arr.filter(d => d !== null);
+      console.log({ nonEmpty });
+      return [...new Set(nonEmpty)];
     }
 
     const Chart = {
@@ -88,10 +91,48 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         scaleX.range([0, width]);
         topLine = height * 0.25;
         bottomLine = height * 0.75;
+
         return Chart;
       },
       // update scales and render chart
       render() {
+        const bookLocs = books.filter(d => d.match.length);
+
+        const allMatches = bookLocs
+          .map(d => d.match_locs)
+          .map(d => d[0])
+          .map(d => {
+            let loc = null;
+            if (d) loc = { location: d.location, mid: d.mid };
+            return loc;
+          });
+        const nonEmpty = allMatches.filter(d => d !== null);
+
+        let matchedLocs = null;
+        if (nonEmpty) {
+          matchedLocs = Array.from(new Set(nonEmpty.map(d => d.location))).map(
+            location => ({
+              location,
+              mid: allMatches.find(e => e.location === location).mid,
+            })
+          );
+        }
+
+        let uniqueLocs = null;
+        if (allMatches)
+          uniqueLocs = findUnique(
+            allMatches.map(d => {
+              let loc = null;
+              if (d) loc = d.location;
+              return loc;
+            })
+          );
+
+        // setting up color scale
+        scaleColor.domain([uniqueLocs]);
+
+        console.log({ col: scaleColor('New York, NY') });
+
         // setting up both underlying axes
         $axes
           .append('g')
@@ -116,7 +157,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .attr('x', d => scaleX(d.start_age))
               .attr('y', topLine - barHeight / 2)
               .attr('width', d => scaleX(d.end_age) - scaleX(d.start_age))
-              .attr('height', barHeight);
+              .attr('height', barHeight)
+              .style('fill', d => scaleColor(d.location));
           });
 
         // add in book releases (beeswarm to prevent overlap)
@@ -141,18 +183,32 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           });
 
         // add connecting lines to places lived
-        const bookLocs = books.filter(d => d.match.length);
 
         $vis
-          .selectAll('.connection__lived')
+          .selectAll('.group__connections')
           .data(bookLocs)
           .join(enter => {
+            const groups = enter
+              .append('g')
+              .attr('class', 'group__connections');
+
+            return groups;
+          })
+          .selectAll('.connection__lived')
+          .data(d => {
+            console.log({ loc: d.match_locs, d });
+            return d.match_locs;
+          })
+          .join(enter => {
+            // console.log({ enter })
             enter
               .append('path')
               .attr('class', 'connection__lived')
+              .style('stroke', d => scaleColor(d.location))
               .attr('d', d => {
                 const thisBook = scaleX(d.pub_age);
-                const thisLoc = scaleX(d.match[0].mid);
+                const thisLoc = scaleX(d.mid);
+                console.log({ d, thisBook, thisLoc });
                 const padding = 10;
                 const starting = [thisLoc, topLine];
                 const ending = [thisBook, bottomLine];
@@ -177,7 +233,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           });
 
         // add names above lived in places with matches
-        const matchedLocs = findUnique(bookLocs.map(d => d.match[0]));
+        // const matchedLocs = findUnique(bookLocs.map(d => d.match_locs));
 
         $vis
           .selectAll('.cities__lived')

@@ -10,14 +10,38 @@ let allData = null;
 let authorLocs = null;
 let oldest = null;
 let birthYearMap = null;
+let unnestedAuthors = null;
+
+function findMatches(d) {
+  console.log({ d });
+  const placeArr = d.match.split(';');
+  const matches = unnestedAuthors
+    .filter(
+      e =>
+        e.slug === d.slug &&
+        placeArr.includes(e.location) &&
+        d.pub_year > e.start_year
+    )
+    .map(e => ({
+      pub_age: d.pub_age,
+      location: e.location.trim(),
+      mid: e.mid,
+    }));
+  console.log({ unnestedAuthors, matches });
+  return matches;
+}
 
 function cleanBooks(data) {
-  const clean = data.map(d => ({
-    ...d,
-    pub_year: +d.pub_year,
-    pub_age: +d.pub_year - birthYearMap.get(d.slug),
-    match: authorLocs.filter(e => e.location === d.location),
-  }));
+  const clean = data
+    .map(d => ({
+      ...d,
+      pub_year: +d.pub_year,
+      pub_age: +d.pub_year - birthYearMap.get(d.slug),
+    }))
+    .map(d => ({
+      ...d,
+      match_locs: findMatches(d),
+    }));
 
   const nested = d3
     .nest()
@@ -41,13 +65,19 @@ function cleanAuthors(data) {
   birthYearMap = new Map(born);
   console.log({ birthYearMap });
 
-  const clean = data.map(d => ({
-    ...d,
-    start_year: +d.start_year,
-    end_year: +d.end_year,
-    start_age: +d.start_year - birthYearMap.get(d.slug),
-    end_age: +d.end_year - birthYearMap.get(d.slug),
-  }));
+  const clean = data
+    .map(d => ({
+      ...d,
+      location: d.location.trim(),
+      start_year: +d.start_year,
+      end_year: +d.end_year,
+      start_age: +d.start_year - birthYearMap.get(d.slug),
+      end_age: +d.end_year - birthYearMap.get(d.slug),
+    }))
+    .map(d => ({
+      ...d,
+      mid: d3.mean([d.start_age, d.end_age]),
+    }));
 
   // finding longest lifespan
   oldest = Math.max(...clean.map(d => d.end_age));
@@ -57,6 +87,8 @@ function cleanAuthors(data) {
     const mid = d3.mean([d.start_age, d.end_age]);
     return { location: d.location, mid };
   });
+
+  unnestedAuthors = clean;
 
   const nested = d3
     .nest()
