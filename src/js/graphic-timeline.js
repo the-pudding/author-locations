@@ -14,7 +14,7 @@ let unnestedAuthors = null;
 const charts = [];
 
 function findMatches(d) {
-  const placeArr = d.match.split(';');
+  const placeArr = d.match.split(';').map(e => e.trim());
   const matches = unnestedAuthors
     .filter(
       e =>

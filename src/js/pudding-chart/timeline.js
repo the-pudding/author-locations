@@ -129,11 +129,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
         // flip graphic if portrait instead of landscape orientation
         vertical = window.innerHeight > window.innerWidth;
-        console.log({
-          height: window.innerHeight,
-          width: window.innerWidth,
-          vertical,
-        });
 
         scaleX.range([0, width]);
         scaleY.range([0, height]);
