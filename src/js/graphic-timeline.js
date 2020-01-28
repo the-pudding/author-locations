@@ -11,6 +11,7 @@ let authorLocs = null;
 let oldest = null;
 let birthYearMap = null;
 let unnestedAuthors = null;
+const charts = [];
 
 function findMatches(d) {
   const placeArr = d.match.split(';');
@@ -101,12 +102,15 @@ function setupTimelines() {
   const $sel = d3.select(this);
   const slug = $sel.attr('data-author');
 
-  const filteredAuthors = allData.authors.filter(d => d.key === slug);
+  const filteredAuthors = allData.authors
+    .filter(d => d.key === slug)
+    .slice(0, 1);
   const filteredBooks = allData.books.filter(d => d.key === slug);
 
   const allFiltered = { filteredAuthors, filteredBooks, oldest };
 
-  $sel.data([allFiltered]).puddingChartTimeline();
+  const chart = $sel.data([allFiltered]).puddingChartTimeline();
+  charts.push(chart);
 }
 
 function setup(data) {
@@ -118,7 +122,9 @@ function setup(data) {
   $figures.each(setupTimelines);
 }
 
-function resize() { }
+function resize() {
+  charts.forEach(chart => chart.resize().render());
+}
 function init() {
   loadData(['authors.json', 'books.json']).then(setup);
 }
