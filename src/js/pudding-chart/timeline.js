@@ -41,7 +41,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     // helper functions
     function findUnique(arr) {
       const nonEmpty = arr.filter(d => d !== null);
-      console.log({ nonEmpty });
       return [...new Set(nonEmpty)];
     }
 
@@ -100,20 +99,20 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
         const allMatches = bookLocs
           .map(d => d.match_locs)
-          .map(d => d[0])
+          // .map(d => d[0])
           .map(d => {
             let loc = null;
             if (d) loc = { location: d.location, mid: d.mid };
             return loc;
           });
-        const nonEmpty = allMatches.filter(d => d !== null);
+        const nonEmpty = allMatches.filter(d => d);
 
         let matchedLocs = null;
         if (nonEmpty) {
           matchedLocs = Array.from(new Set(nonEmpty.map(d => d.location))).map(
             location => ({
               location,
-              mid: allMatches.find(e => e.location === location).mid,
+              mid: nonEmpty.find(e => e.location === location).mid,
             })
           );
         }
@@ -130,8 +129,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
         // setting up color scale
         scaleColor.domain([uniqueLocs]);
-
-        console.log({ col: scaleColor('New York, NY') });
 
         // setting up both underlying axes
         $axes
@@ -183,24 +180,13 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           });
 
         // add connecting lines to places lived
+        // filtering data
+        const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
 
         $vis
           .selectAll('.group__connections')
-          .data(bookLocs)
+          .data(matchesOnly)
           .join(enter => {
-            const groups = enter
-              .append('g')
-              .attr('class', 'group__connections');
-
-            return groups;
-          })
-          .selectAll('.connection__lived')
-          .data(d => {
-            console.log({ loc: d.match_locs, d });
-            return d.match_locs;
-          })
-          .join(enter => {
-            // console.log({ enter })
             enter
               .append('path')
               .attr('class', 'connection__lived')
@@ -208,7 +194,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .attr('d', d => {
                 const thisBook = scaleX(d.pub_age);
                 const thisLoc = scaleX(d.mid);
-                console.log({ d, thisBook, thisLoc });
                 const padding = 10;
                 const starting = [thisLoc, topLine];
                 const ending = [thisBook, bottomLine];
@@ -233,7 +218,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           });
 
         // add names above lived in places with matches
-        // const matchedLocs = findUnique(bookLocs.map(d => d.match_locs));
 
         $vis
           .selectAll('.cities__lived')

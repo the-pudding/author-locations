@@ -13,7 +13,6 @@ let birthYearMap = null;
 let unnestedAuthors = null;
 
 function findMatches(d) {
-  console.log({ d });
   const placeArr = d.match.split(';');
   const matches = unnestedAuthors
     .filter(
@@ -26,9 +25,10 @@ function findMatches(d) {
       pub_age: d.pub_age,
       location: e.location.trim(),
       mid: e.mid,
-    }));
-  console.log({ unnestedAuthors, matches });
-  return matches;
+    }))
+    .sort((a, b) => d3.ascending(a.mid, b.mid));
+  const mostRecent = matches.pop();
+  return mostRecent;
 }
 
 function cleanBooks(data) {
@@ -63,7 +63,6 @@ function cleanAuthors(data) {
     .map(d => [d.key, d.value]);
 
   birthYearMap = new Map(born);
-  console.log({ birthYearMap });
 
   const clean = data
     .map(d => ({
@@ -119,7 +118,7 @@ function setup(data) {
   $figures.each(setupTimelines);
 }
 
-function resize() {}
+function resize() { }
 function init() {
   loadData(['authors.json', 'books.json']).then(setup);
 }
