@@ -193,8 +193,18 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         // add in book releases (beeswarm to prevent overlap)
         const simulation = d3
           .forceSimulation(nestedBooks)
-          .force('x', d3.forceX(d => scaleX(d.value.year)))
-          .force('y', d3.forceY(bookLine))
+          .force(
+            'x',
+            vertical
+              ? d3.forceX(bookLine)
+              : d3.forceX(d => scaleX(d.value.year))
+          )
+          .force(
+            'y',
+            vertical
+              ? d3.forceY(d => scaleY(d.value.year))
+              : d3.forceY(bookLine)
+          )
           .force('collide', d3.forceCollide(RADIUS))
           .stop();
 
@@ -232,13 +242,21 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .style('stroke', d => scaleColor(d.location))
           )
           .attr('d', d => {
-            const thisBook = scaleX(d.pub_age);
-            const thisLoc = scaleX(d.mid);
+            const thisBook = vertical ? scaleY(d.pub_age) : scaleX(d.pub_age);
+            const thisLoc = vertical ? scaleY(d.mid) : scaleX(d.mid);
             const padding = 10;
-            const starting = [thisLoc, authorLine];
-            const ending = [thisBook, bookLine];
-            const startControl = [thisLoc, height / 2 + padding];
-            const endControl = [thisBook, height / 2 - padding];
+            const starting = vertical
+              ? [authorLine, thisLoc]
+              : [thisLoc, authorLine];
+            const ending = vertical
+              ? [bookLine, thisBook]
+              : [thisBook, bookLine];
+            const startControl = vertical
+              ? [width / 2 + padding, thisLoc]
+              : [thisLoc, height / 2 + padding];
+            const endControl = vertical
+              ? [width / 2 - padding, thisBook]
+              : [thisBook, height / 2 - padding];
 
             const path = [
               // move to starting point
@@ -269,9 +287,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .attr('text-anchor', 'middle')
               .attr('alignment-baseline', 'bottom')
           )
-          .attr(
-            'transform',
-            d => `translate(${scaleX(d.mid)}, ${authorLine - barHeight / 2})`
+          .attr('transform', d =>
+            vertical
+              ? `translate(${authorLine - barHeight}, ${scaleY(d.mid)})`
+              : `translate(${scaleX(d.mid)}, ${authorLine - barHeight / 2})`
           )
           .style('font-size', FONT_SIZE);
 
@@ -292,9 +311,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .selectAll('.group__never')
           .data(neverNest)
           .join(enter => enter.append('g').attr('class', 'group__never'))
-          .attr(
-            'transform',
-            d => `translate(${scaleX(d.value.year)}, ${bookLine})`
+          .attr('transform', d =>
+            vertical
+              ? `translate(${bookLine}, ${scaleY(d.value.year)})`
+              : `translate(${scaleX(d.value.year)}, ${bookLine})`
           );
 
         $gNever
