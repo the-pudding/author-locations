@@ -1,3 +1,4 @@
+/* global d3 */
 import loadData from './load-data';
 import './pudding-chart/timeline';
 

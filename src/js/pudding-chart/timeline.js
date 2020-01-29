@@ -1,3 +1,4 @@
+/* global d3 */
 /*
  USAGE (example: line chart)
  1. c+p this template to a new file (line.js)
@@ -46,10 +47,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let matchedLocs = null;
 
     // helper functions
-    function findUnique(arr) {
-      const nonEmpty = arr.filter(d => d !== null);
-      return [...new Set(nonEmpty)];
-    }
 
     const Chart = {
       // called once at start
@@ -203,25 +200,15 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .force('collide', d3.forceCollide(RADIUS))
           .stop();
 
-        for (let i = 0; i < 120; ++i) simulation.tick();
+        for (let i = 0; i < 120; i += 1) simulation.tick();
 
         $books
           .selectAll('.book')
           .data(nestedBooks)
-          .join(
-            enter => {
-              const $books = enter.append('circle').attr('class', 'book');
-              return $books;
-            },
-            update => {
-              const $books = d3
-                .selectAll('.book')
-                .attr('cx', d => d.x)
-                .attr('cy', d => d.y)
-                .attr('r', RADIUS);
-              return $books;
-            }
-          );
+          .join(enter => enter.append('circle').attr('class', 'book'))
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y)
+          .attr('r', RADIUS);
 
         // add connecting lines to places lived
         // filtering data
@@ -323,7 +310,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .text(d => d)
               .attr('class', 'cities__never')
               .attr('text-anchor', 'middle')
-              .attr('transform', (d, i, n) => `translate(0, ${i * FONT_SIZE})`)
+              .attr('transform', (d, i) => `translate(0, ${i * FONT_SIZE})`)
               .attr('alignment-baseline', 'hanging')
               .style('font-size', FONT_SIZE);
           });
