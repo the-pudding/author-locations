@@ -15,6 +15,7 @@ function resize() {
   if (previousWidth !== width) {
     previousWidth = width;
     Distance.resize();
+    Timeline.resize();
   }
 }
 

@@ -11,8 +11,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
   function createChart(el) {
     const $sel = d3.select(el);
     let data = $sel.datum();
-    const authors = data.filteredAuthors[0].values;
+
+    const authorLocations = data.filteredAuthors[0].values;
     const books = data.filteredBooks[0].values;
+    const { oldest } = data;
     // dimension stuff
     let width = 0;
     let height = 0;
@@ -23,22 +25,30 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     const barHeight = 20;
     const RADIUS = 6;
     let nestedBooks = null;
-    let topLine = null;
-    let bottomLine = null;
+    let authorLine = null;
+    let bookLine = null;
     const FONT_SIZE = 12;
+    let vertical = false;
 
     // scales
     const scaleX = d3.scaleLinear();
-    const scaleY = null;
+    const scaleColor = d3.scaleOrdinal(d3.schemeSet1);
+    const scaleY = d3.scaleLinear();
 
     // dom elements
     let $svg = null;
     let $axes = null;
     let $vis = null;
+    let $authors = null;
+    let $books = null;
+    let $connections = null;
+    let bookLocs = null;
+    let matchedLocs = null;
 
     // helper functions
     function findUnique(arr) {
-      return [...new Set(arr)];
+      const nonEmpty = arr.filter(d => d !== null);
+      return [...new Set(nonEmpty)];
     }
 
     const Chart = {
@@ -56,24 +66,54 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('class', 'g-axis')
           .attr('transform', `translate(${marginLeft}, ${marginTop})`);
 
+        $axes.append('g').attr('class', 'author__axis');
+
+        $axes.append('g').attr('class', 'book__axis');
+
         // setup viz group
         $vis = $g.append('g').attr('class', 'g-vis');
 
-        // find extent of data
-        const minYear = d3.min(authors, d => d.start_year);
-        const maxYear = d3.max(authors, d => d.end_year);
-        scaleX.domain([minYear, maxYear]).ticks(5);
+        // add group for author rectangles
+        $authors = $vis.append('g').attr('class', 'g-authors');
+        $books = $vis.append('g').attr('class', 'g-books');
+        $connections = $vis.append('g').attr('class', 'g-connections');
+
+        // put all authors on same x scale of age
+        scaleX.domain([0, oldest]).ticks(5);
+        scaleY.domain([0, oldest]).ticks(5);
 
         // nest locations by book
         nestedBooks = d3
           .nest()
           .key(d => d.title)
           .rollup(leaves => {
-            console.log({ leaves });
-            const pubYear = d3.max(leaves, d => d.pub_year);
+            const pubYear = d3.max(leaves, d => d.pub_age);
             return { values: leaves, year: pubYear };
           })
           .entries(books);
+
+        // reconsider how this all works
+
+        bookLocs = books.filter(d => d.match.length);
+
+        const allMatches = bookLocs
+          .map(d => d.match_locs)
+          // .map(d => d[0])
+          .map(d => {
+            let loc = null;
+            if (d) loc = { location: d.location, mid: d.mid };
+            return loc;
+          });
+        const nonEmpty = allMatches.filter(d => d);
+
+        if (nonEmpty) {
+          matchedLocs = Array.from(new Set(nonEmpty.map(d => d.location))).map(
+            location => ({
+              location,
+              mid: nonEmpty.find(e => e.location === location).mid,
+            })
+          );
+        }
 
         Chart.resize();
         Chart.render();
@@ -87,118 +127,167 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('width', width + marginLeft + marginRight)
           .attr('height', height + marginTop + marginBottom);
 
+        // flip graphic if portrait instead of landscape orientation
+        vertical = window.innerHeight > window.innerWidth;
+
         scaleX.range([0, width]);
-        topLine = height * 0.25;
-        bottomLine = height * 0.75;
+        scaleY.range([0, height]);
+        authorLine = vertical ? width * 0.25 : height * 0.25;
+        bookLine = vertical ? width * 0.75 : height * 0.75;
+
+        // setting up both underlying axes
+
+        $axes
+          .select('.author__axis')
+          .attr(
+            'transform',
+            vertical
+              ? `translate(${authorLine}, 0)`
+              : `translate(0, ${authorLine})`
+          )
+          .call(vertical ? d3.axisLeft(scaleY) : d3.axisTop(scaleX));
+
+        $axes
+          .select('.book__axis')
+          .attr(
+            'transform',
+            vertical ? `translate(${bookLine}, 0)` : `translate(0, ${bookLine})`
+          )
+          .call(vertical ? d3.axisRight(scaleY) : d3.axisBottom(scaleX));
+
         return Chart;
       },
       // update scales and render chart
       render() {
-        // setting up both underlying axes
-        $axes
-          .append('g')
-          .attr('class', 'author__axis')
-          .attr('transform', `translate(0, ${topLine})`)
-          .call(d3.axisBottom(scaleX));
-
-        $axes
-          .append('g')
-          .attr('class', 'book__axis')
-          .attr('transform', `translate(0, ${bottomLine})`)
-          .call(d3.axisBottom(scaleX));
+        // setting up color scale
+        // scaleColor.domain([uniqueLocs]);
 
         // add in author locations
-        $vis
-          .selectAll('author__location')
-          .data(authors)
-          .join(enter => {
-            console.log({ check: scaleX(1898) });
+        $authors
+          .selectAll('.author__location')
+          .data(authorLocations, d => d.start_age)
+          .join(enter =>
             enter
               .append('rect')
               .attr('class', 'author__location')
-              .attr('x', d => scaleX(d.start_year))
-              .attr('y', topLine - barHeight / 2)
-              .attr('width', d => scaleX(d.end_year) - scaleX(d.start_year))
-              .attr('height', barHeight);
-          });
+              .style('fill', d => scaleColor(d.location))
+          )
+          .attr('x', d =>
+            vertical ? authorLine - barHeight / 2 : scaleX(d.start_age)
+          )
+          .attr('y', d =>
+            vertical ? scaleY(d.start_age) : authorLine - barHeight / 2
+          )
+          .attr('width', d =>
+            vertical ? barHeight : scaleX(d.end_age) - scaleX(d.start_age)
+          )
+          .attr('height', d =>
+            vertical ? scaleY(d.end_age) - scaleY(d.start_age) : barHeight
+          );
 
-        console.log({ nestedBooks });
         // add in book releases (beeswarm to prevent overlap)
         const simulation = d3
           .forceSimulation(nestedBooks)
-          .force('x', d3.forceX(d => scaleX(d.value.year)))
-          .force('y', d3.forceY(bottomLine))
+          .force(
+            'x',
+            vertical
+              ? d3.forceX(bookLine)
+              : d3.forceX(d => scaleX(d.value.year))
+          )
+          .force(
+            'y',
+            vertical
+              ? d3.forceY(d => scaleY(d.value.year))
+              : d3.forceY(bookLine)
+          )
           .force('collide', d3.forceCollide(RADIUS))
           .stop();
 
         for (let i = 0; i < 120; ++i) simulation.tick();
 
-        $vis
-          .selectAll('book')
+        $books
+          .selectAll('.book')
           .data(nestedBooks)
-          .join(enter => {
-            enter
-              .append('circle')
-              .attr('cx', d => d.x)
-              .attr('cy', d => d.y)
-              .attr('r', RADIUS);
-          });
+          .join(
+            enter => {
+              const $books = enter.append('circle').attr('class', 'book');
+              return $books;
+            },
+            update => {
+              const $books = d3
+                .selectAll('.book')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', RADIUS);
+              return $books;
+            }
+          );
 
         // add connecting lines to places lived
-        const bookLocs = books.filter(d => d.match.length);
+        // filtering data
+        const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
 
-        $vis
+        $connections
           .selectAll('.connection__lived')
-          .data(bookLocs)
-          .join(enter => {
+          .data(matchesOnly)
+          .join(enter =>
             enter
               .append('path')
               .attr('class', 'connection__lived')
-              .attr('d', d => {
-                const thisBook = scaleX(d.pub_year);
-                const thisLoc = scaleX(d.match[0].mid);
-                const padding = 10;
-                const starting = [thisLoc, topLine];
-                const ending = [thisBook, bottomLine];
-                const startControl = [thisLoc, height / 2 + padding];
-                const endControl = [thisBook, height / 2 - padding];
+              .style('stroke', d => scaleColor(d.location))
+          )
+          .attr('d', d => {
+            const thisBook = vertical ? scaleY(d.pub_age) : scaleX(d.pub_age);
+            const thisLoc = vertical ? scaleY(d.mid) : scaleX(d.mid);
+            const padding = 10;
+            const starting = vertical
+              ? [authorLine, thisLoc]
+              : [thisLoc, authorLine];
+            const ending = vertical
+              ? [bookLine, thisBook]
+              : [thisBook, bookLine];
+            const startControl = vertical
+              ? [width / 2 + padding, thisLoc]
+              : [thisLoc, height / 2 + padding];
+            const endControl = vertical
+              ? [width / 2 - padding, thisBook]
+              : [thisBook, height / 2 - padding];
 
-                const path = [
-                  // move to starting point
-                  'M',
-                  starting,
-                  // add cubic bezier curve
-                  'C',
-                  startControl,
-                  endControl,
-                  // add end point
-                  ending,
-                ];
+            const path = [
+              // move to starting point
+              'M',
+              starting,
+              // add cubic bezier curve
+              'C',
+              startControl,
+              endControl,
+              // add end point
+              ending,
+            ];
 
-                const joined = path.join(' ');
-                return joined;
-              });
+            const joined = path.join(' ');
+            return joined;
           });
 
-        // add names above lived in places with matches
-        const matchedLocs = findUnique(bookLocs.map(d => d.match[0]));
+        // // add names above lived in places with matches
 
         $vis
           .selectAll('.cities__lived')
           .data(matchedLocs)
-          .join(enter => {
+          .join(enter =>
             enter
               .append('text')
               .text(d => d.location)
-              .attr(
-                'transform',
-                d => `translate(${scaleX(d.mid)}, ${topLine - barHeight / 2})`
-              )
               .attr('class', 'cities__lived')
               .attr('text-anchor', 'middle')
               .attr('alignment-baseline', 'bottom')
-              .style('font-size', FONT_SIZE);
-          });
+          )
+          .attr('transform', d =>
+            vertical
+              ? `translate(${authorLine - barHeight}, ${scaleY(d.mid)})`
+              : `translate(${scaleX(d.mid)}, ${authorLine - barHeight / 2})`
+          )
+          .style('font-size', FONT_SIZE);
 
         // adding places never lived
         const neverLocs = books.filter(d => !d.match.length);
@@ -206,30 +295,22 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .nest()
           .key(d => d.title)
           .rollup(e => {
-            console.log({ e });
             const mapped = e.map(f => {
-              console.log({ f });
               return f.location;
             });
-            return { locs: mapped, year: e[0].pub_year };
+            return { locs: mapped, year: e[0].pub_age };
           })
           .entries(neverLocs);
 
         const $gNever = $vis
           .selectAll('.group__never')
           .data(neverNest)
-          .join(enter => {
-            console.log({ enter });
-            const groups = enter
-              .append('g')
-              .attr('class', 'group__never')
-              .attr(
-                'transform',
-                d => `translate(${scaleX(d.value.year)}, ${bottomLine})`
-              );
-
-            return groups;
-          });
+          .join(enter => enter.append('g').attr('class', 'group__never'))
+          .attr('transform', d =>
+            vertical
+              ? `translate(${bookLine}, ${scaleY(d.value.year)})`
+              : `translate(${scaleX(d.value.year)}, ${bookLine})`
+          );
 
         $gNever
           .selectAll('.cities__never')
