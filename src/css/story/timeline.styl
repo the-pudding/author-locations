@@ -1,9 +1,53 @@
 #timeline
-    .author__location 
-        fill $black
-        stroke-width 2px
-        stroke $white
-    .connection__lived
-        fill none 
-        stroke-width 1px 
-        stroke $black
+	margin 0 auto
+	max-width 80rem
+
+	.timeline__intro
+		margin 0 auto
+		margin-top 2rem
+		padding 1rem
+		max-width $column-width
+
+	.intro__hed
+		margin 0
+		font-family $sans-display
+		set-type-size(xxx-large, false)
+		text-align center
+
+	.intro__dek
+		margin 0
+
+	.author__figure
+		margin 2rem auto
+
+	.author__info
+		margin 0 auto
+		margin-top 2rem
+		padding 1rem
+		max-width $column-width
+		text-align center
+
+	.info__name
+		margin 0
+		font-family $sans-display
+		set-type-size(xx-large, false)
+
+	.info__lifespan
+		margin 0
+		color $gray-dark
+		font-family $sans-display
+
+	.author__text
+		margin 0 auto
+		padding 1rem
+		max-width $column-width
+
+	rect.author__location
+		fill $secondary
+		stroke-width 2px
+		stroke $fg
+
+	path.connection__lived
+		fill none
+		stroke-width 2px
+		stroke $fg

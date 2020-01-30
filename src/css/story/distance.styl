@@ -25,7 +25,7 @@
 			margin 0
 			padding 1rem
 			set-type-size(large)
-			border 1px solid $fg
+			border 2px solid $fg
 			background-color rgba($bg, 0.9)
 
 	figure
@@ -34,14 +34,23 @@
 		left 0
 		z-index 0
 		margin 0
+		min-height 480px
 		width 100%
-		height 90vh
 		transform translate3d(0, 0, 0)
 
 	.arc path
 		fill none
 		stroke $fg
+		stroke-width 2px
 
 	.hist rect
-		stroke $bg
-		fill $fg
+		stroke $fg
+		stroke-width 2px
+		fill $secondary
+
+		&.is-highlight
+			fill $primary
+
+	.g-axis
+		path
+			display none

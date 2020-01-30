@@ -1,1 +1,27 @@
 /* CUSTOM STORY STYLE */
+body
+	overflow-x hidden
+
+p
+	set-type-size(medium)
+
+	+mq('bp-6')
+		set-type-size(large)
+
+a
+	border-bottom 2px solid $primary
+
+	&:hover
+		background-color $primary
+
+svg
+	display block
+
+	text
+		set-type-size(x-small)
+		font-family $sans-display
+		fill $gray-dark
+
+mark
+	padding 0 0.25em
+	background-color $primary

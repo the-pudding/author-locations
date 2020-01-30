@@ -163,12 +163,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $authors
           .selectAll('.author__location')
           .data(authorLocations, d => d.start_age)
-          .join(enter =>
-            enter
-              .append('rect')
-              .attr('class', 'author__location')
-              .style('fill', d => scaleColor(d.location))
-          )
+          .join(enter => enter.append('rect').attr('class', 'author__location'))
           .attr('x', d =>
             vertical ? authorLine - barHeight / 2 : scaleX(d.start_age)
           )
@@ -218,10 +213,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .selectAll('.connection__lived')
           .data(matchesOnly)
           .join(enter =>
-            enter
-              .append('path')
-              .attr('class', 'connection__lived')
-              .style('stroke', d => scaleColor(d.location))
+            enter.append('path').attr('class', 'connection__lived')
           )
           .attr('d', d => {
             const thisBook = vertical ? scaleY(d.pub_age) : scaleX(d.pub_age);

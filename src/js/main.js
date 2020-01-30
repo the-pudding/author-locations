@@ -40,7 +40,7 @@ function init() {
   // setup sticky header menu
   setupStickyHeader();
   // kick off graphic code
-  // Distance.init();
+  Distance.init();
   Timeline.init();
   // load footer stories
   // footer.init();

@@ -16,9 +16,13 @@ let chart = null;
 function updateDimensions() {
   binSize = $section.node().offsetWidth < 960 ? 20 : 10;
   const stepH = Math.floor(window.innerHeight * 0.75);
+  $figure.style('height', `${window.innerHeight}px`);
   $step.style('height', `${stepH}px`);
   $step.style('margin-top', (d, i) =>
     i === 0 ? `${-window.innerHeight * 0.5}px` : 0
+  );
+  $step.style('padding-bottom', (d, i) =>
+    i === $step.size() - 1 ? `${window.innerHeight * 1}px` : 0
   );
 
   // const figureH = $figure.node().offsetHeight;
@@ -37,10 +41,21 @@ function resize() {
 function handleStepEnter({ index }) {
   $step.classed('is-active', (d, i) => i === index);
   if (index === 0)
-    chart.filter(d => ['White Teeth'].includes(d.book_title)).render();
-  if (index === 1)
-    chart.filter(d => ['White Teeth', '2666'].includes(d.book_title)).render();
-  if (index === 2) chart.filter(d => true).render();
+    chart
+      .filter(d => ['White Teeth'].includes(d.book_title))
+      .highlight('White Teeth')
+      .render();
+  else if (index === 1)
+    chart
+      .filter(d => ['White Teeth', '2666'].includes(d.book_title))
+      .highlight('2666')
+      .render();
+  else if (index === 2)
+    chart
+      .filter(() => true)
+      .highlight()
+      .render();
+  else if (index === 3) chart.highlight('Rabbit at Rest').render();
 }
 
 function cleanData(data) {

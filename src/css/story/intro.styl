@@ -1,27 +1,38 @@
-.intro
-	margin 0 auto
-	padding 6rem 1rem 3rem 1rem
+#intro
+	.intro
+		margin 0 auto
+		padding 6rem 1rem 3rem 1rem
+		font-family $sans-display
 
-	&__hed
-		max-width 60rem
-		margin 0 auto
-		text-align center
-		
-	&__dek
-		max-width $column-width
-		margin 0 auto
-		margin-top 1rem
-		text-align center
-	
-	&__byline
-		max-width $column-width
-		margin 0 auto
-		margin-top 1rem
-		text-align center
-	
-	&__time
-		display block
-		max-width $column-width
-		margin 0 auto
-		margin-top 1rem
-		text-align center
+		&__hed
+			margin 0 auto
+			padding 1rem
+			max-width $column-width
+			text-align left
+
+			+mq('bp-4')
+				set-type-size(xxxx-large)
+				line-height 1
+
+		&__dek
+			margin 0 auto
+			margin-top 1rem
+			max-width $column-width
+			text-align center
+
+		&__byline
+			margin 0 auto
+			padding 0 1rem
+			max-width $column-width
+			text-align left
+
+		&__time
+			display block
+			margin 0 auto
+			padding 0 1rem
+			max-width $column-width
+			text-align left
+			set-type-size(small)
+
+		&__prelude
+			font-family $serif

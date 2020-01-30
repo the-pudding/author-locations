@@ -20,6 +20,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     // data
     let data = $chart.datum();
     let filter = () => false;
+    let highlight = null;
 
     // dimensions
     const { binSize, maxBin } = options;
@@ -34,6 +35,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     let offY = 0;
     const SPLIT = 0.35;
     const DUR = 1000;
+    const BUFFER = 24;
 
     // scales
     const scaleArcX = d3.scaleLinear();
@@ -120,7 +122,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         scaleArcY.range([0, SPLIT * height]);
         scaleHistX.range([0, width]);
 
-        marginLeft = scaleHistX.bandwidth();
+        marginLeft = scaleHistX.bandwidth() + BUFFER;
         marginRight = marginLeft;
 
         rectHeight = Math.floor(((1 - SPLIT) * height - SPACER) / maxBin);
@@ -133,7 +135,26 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         // offset chart for margins
         $vis.attr('transform', `translate(${marginLeft}, ${MARGIN_TOP})`);
 
-        const filteredData = data.filter(filter);
+        const axis = d3
+          .axisTop(scaleArcX)
+          .tickFormat((d, i) => (i === 0 ? `${d} miles` : d));
+
+        $axis
+          .call(axis)
+          .attr(
+            'transform',
+            `translate(${marginLeft}, ${MARGIN_TOP + offY - rectHeight})`
+          );
+
+        $axis
+          .select('.tick text')
+          .attr('text-anchor', 'end')
+          .attr('x', -4);
+
+        const filteredData = data.filter(filter).map(d => ({
+          ...d,
+          highlight: d.book_title === highlight,
+        }));
 
         const nestedData = d3
           .nest()
@@ -180,7 +201,8 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         $histBook
           .select('rect')
           .attr('width', scaleHistX.bandwidth())
-          .attr('height', rectHeight);
+          .attr('height', rectHeight)
+          .classed('is-highlight', d => d.highlight);
 
         $histBook
           .transition()
@@ -202,6 +224,10 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       filter(val) {
         if (!arguments.length) return filter;
         filter = val;
+        return Chart;
+      },
+      highlight(val) {
+        highlight = val;
         return Chart;
       },
     };

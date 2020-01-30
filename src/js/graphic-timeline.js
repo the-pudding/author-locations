@@ -3,7 +3,7 @@ import loadData from './load-data';
 import './pudding-chart/timeline';
 
 const $section = d3.select('[data-js="timeline"]');
-const $figures = $section.selectAll('[data-js="timeline__figure"]');
+const $figures = $section.selectAll('[data-js="author__figure"]');
 // const $article = $section.select('[data-js="distance__article"]');
 // const $step = $article.selectAll('[data-js="article__step"]');
 
