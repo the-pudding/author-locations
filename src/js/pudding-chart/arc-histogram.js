@@ -51,25 +51,23 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       $tooltip.select("[data-js='tooltip__author'] span").text(d.author_name);
       $tooltip
         .select("[data-js='tooltip__residence'] span")
-        .text(d.residence.join(','));
+        .text(d.residence.join(', '));
       $tooltip
         .select("[data-js='tooltip__setting'] span")
-        .text(d.setting.join(','));
+        .text(d.setting.join(', '));
       $tooltip
         .select("[data-js='tooltip__distance'] span")
-        .text(`${d.distance} miles`);
+        .text(`${Math.round(d.distance)} miles`);
 
       const $book = d3.select(this);
-      const x = scaleHistX(d.bin * binSize) + marginLeft;
+      const x = scaleHistX(d.bin * binSize);
       const y = +$book.attr('data-y');
-      const left = x > width / 2 ? 'auto' : `${x + binSize + 8}px`;
-      const right = x > width / 2 ? `${x}px` : 'auto';
-      const top = y > height / 2 ? 'auto' : `${y}px`;
+      const left = x > width / 2 ? 'auto' : `${x + marginLeft + binSize + 8}px`;
+      const right = x > width / 2 ? `${width - x - marginRight + 4}px` : 'auto';
+      const top = y > height / 2 ? 'auto' : `${y - 1}px`;
       const bottom = y > height / 2 ? `${height - y}px` : 'auto';
 
-      $svg
-        .selectAll('.book')
-        .classed('is-highlight', da => da.book_title === d.book_title);
+      $book.select('rect').classed('is-highlight', true);
 
       $tooltip
         .style('top', top)
@@ -79,6 +77,9 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         .classed('is-visible', true);
     }
     function handleOut() {
+      d3.select(this)
+        .select('rect')
+        .classed('is-highlight', false);
       $tooltip.classed('is-visible', false);
     }
     function makeArc({ distance }) {
