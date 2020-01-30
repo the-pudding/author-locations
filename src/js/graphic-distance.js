@@ -22,7 +22,7 @@ function updateDimensions() {
     i === 0 ? `${-window.innerHeight * 0.5}px` : 0
   );
   $step.style('padding-bottom', (d, i) =>
-    i === $step.size() - 1 ? `${window.innerHeight * 1}px` : 0
+    i === $step.size() - 1 ? `${window.innerHeight * 1.05}px` : 0
   );
 
   // const figureH = $figure.node().offsetHeight;
@@ -56,6 +56,12 @@ function handleStepEnter({ index }) {
       .highlight()
       .render();
   else if (index === 3) chart.highlight('Rabbit at Rest').render();
+
+  $figure
+    .select('[data-js="figure__tooltip"]')
+    .classed('is-active', index === 4);
+
+  $figure.select('[data-js="figure__chart"]').classed('is-active', index === 4);
 }
 
 function cleanData(data) {

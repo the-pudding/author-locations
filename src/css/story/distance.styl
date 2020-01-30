@@ -7,6 +7,7 @@
 		position relative
 		margin 0 auto
 		max-width $column-width
+		pointer-events none
 
 	.step
 		margin 0 auto
@@ -38,6 +39,17 @@
 		width 100%
 		transform translate3d(0, 0, 0)
 
+	.figure__chart
+		position absolute
+		top 0
+		left 0
+		width 100%
+		height 100%
+
+		&.is-active
+			rect
+				cursor pointer
+
 	.arc path
 		fill none
 		stroke $fg
@@ -54,3 +66,23 @@
 	.g-axis
 		path
 			display none
+
+	.figure__tooltip
+		position absolute
+		visibility hidden
+		padding 1rem
+		width 15rem
+		background $fg
+		color $bg
+		font-family $sans-display
+		pointer-events none
+
+		&.is-visible.is-active
+			visibility visible
+
+		p
+			margin 0
+			set-type-size(small)
+
+		span
+			font-weight bold

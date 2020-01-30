@@ -1,5 +1,16 @@
 <section id='distance' data-js='distance'>
-	<figure data-js='distance__figure'></figure>
+	<figure data-js='distance__figure'>
+		<div data-js='figure__chart' class='figure__chart'></div>
+		<div data-js='figure__tooltip' class='figure__tooltip'>
+			<p class='tooltip__book' data-js='tooltip__book'>Title: <span></span></p>
+			<p class='tooltip__author' data-js='tooltip__author'>Author: <span></span></p>
+			<p class='tooltip__location' data-js='tooltip__residence'>Residence(s): <span></span></p>
+			<p class='tooltip__location' data-js='tooltip__setting'>Setting(s): <span></span></p>
+			<p class='tooltip__distance' data-js='tooltip__distance'>Distance: <span></span></p>
+		</div>
+	</figure>
+
+	</div>
 	<article data-js='distance__article'>
 		{{#each doc.distance}}
 			<div class='step' data-js='article__step' data-step='{{step}}'>

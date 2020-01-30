@@ -13,6 +13,8 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
   function createChart(el) {
     // dom elements
     const $chart = d3.select(el);
+    const $tooltip = $chart.select('[data-js="figure__tooltip"]');
+    const $main = d3.select('main');
     let $svg = null;
     let $axis = null;
     let $vis = null;
@@ -26,6 +28,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     const { binSize, maxBin } = options;
     let width = 0;
     let height = 0;
+    let mainW = 0;
     const MARGIN_TOP = 0;
     const MARGIN_BOTTOM = 8;
     const SPACER = 8;
@@ -43,6 +46,41 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     const scaleHistX = d3.scaleBand();
 
     // helper functions
+    function handleEnter(d) {
+      $tooltip.select("[data-js='tooltip__book'] span").text(d.book_title);
+      $tooltip.select("[data-js='tooltip__author'] span").text(d.author_name);
+      $tooltip
+        .select("[data-js='tooltip__residence'] span")
+        .text(d.residence.join(','));
+      $tooltip
+        .select("[data-js='tooltip__setting'] span")
+        .text(d.setting.join(','));
+      $tooltip
+        .select("[data-js='tooltip__distance'] span")
+        .text(`${d.distance} miles`);
+
+      const $book = d3.select(this);
+      const x = scaleHistX(d.bin * binSize) + marginLeft;
+      const y = +$book.attr('data-y');
+      const left = x > width / 2 ? 'auto' : `${x + binSize + 8}px`;
+      const right = x > width / 2 ? `${x}px` : 'auto';
+      const top = y > height / 2 ? 'auto' : `${y}px`;
+      const bottom = y > height / 2 ? `${height - y}px` : 'auto';
+
+      $svg
+        .selectAll('.book')
+        .classed('is-highlight', da => da.book_title === d.book_title);
+
+      $tooltip
+        .style('top', top)
+        .style('left', left)
+        .style('bottom', bottom)
+        .style('right', right)
+        .classed('is-visible', true);
+    }
+    function handleOut() {
+      $tooltip.classed('is-visible', false);
+    }
     function makeArc({ distance }) {
       const a = scaleArcX(distance) * 0.51;
       const b = scaleArcY(distance);
@@ -84,13 +122,18 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         .append('rect')
         .attr('x', 0)
         .attr('y', 0);
+
+      $book.on('mouseenter', handleEnter).on('mouseout', handleOut);
       return $book;
     }
 
     const Chart = {
       // called once at start
       init() {
-        $svg = $chart.append('svg').attr('class', 'pudding-chart');
+        $svg = $chart
+          .select('.figure__chart')
+          .append('svg')
+          .attr('class', 'pudding-chart');
 
         // create axis
         $axis = $svg.append('g').attr('class', 'g-axis');
@@ -110,6 +153,8 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       },
       // on resize, update new dimensions
       resize() {
+        mainW = $main.node().offsetWidth;
+
         // defaults to grabbing dimensions from container element
         width = $chart.node().offsetWidth - marginLeft - marginRight;
         height = $chart.node().offsetHeight - MARGIN_TOP - MARGIN_BOTTOM;
@@ -210,6 +255,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
           .delay((d, i) => (filteredData.length > 2 ? d.bin * 20 : 0))
           .ease(d3.easeCubicInOut)
           .attr('transform', (d, i) => `translate(0, ${i * rectHeight + offY})`)
+          .attr('data-y', (d, i) => i * rectHeight + offY)
           .style('opacity', 1);
 
         return Chart;
