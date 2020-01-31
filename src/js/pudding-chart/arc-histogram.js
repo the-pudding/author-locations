@@ -23,6 +23,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     let data = $chart.datum();
     let filter = () => false;
     let highlight = null;
+    let mobile = false;
 
     // dimensions
     const { binSize, maxBin } = options;
@@ -38,7 +39,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     let offY = 0;
     const SPLIT = 0.35;
     const DUR = 1000;
-    const BUFFER = 24;
+    const BUFFER = 26;
 
     // scales
     const scaleArcX = d3.scaleLinear();
@@ -69,12 +70,16 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
 
       $book.select('rect').classed('is-highlight', true);
 
-      $tooltip
-        .style('top', top)
-        .style('left', left)
-        .style('bottom', bottom)
-        .style('right', right)
-        .classed('is-visible', true);
+      if (mobile)
+        $tooltip.classed('is-visible', true).classed('is-mobile', true);
+      else
+        $tooltip
+          .style('top', top)
+          .style('left', left)
+          .style('bottom', bottom)
+          .style('right', right)
+          .classed('is-mobile', false)
+          .classed('is-visible', true);
     }
     function handleOut() {
       d3.select(this)
@@ -155,6 +160,9 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       // on resize, update new dimensions
       resize() {
         mainW = $main.node().offsetWidth;
+        mobile = mainW < 960;
+        marginLeft = BUFFER;
+        marginRight = BUFFER;
 
         // defaults to grabbing dimensions from container element
         width = $chart.node().offsetWidth - marginLeft - marginRight;
@@ -168,9 +176,6 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         scaleArcY.range([0, SPLIT * height]);
         scaleHistX.range([0, width]);
 
-        marginLeft = scaleHistX.bandwidth() + BUFFER;
-        marginRight = marginLeft;
-
         rectHeight = Math.floor(((1 - SPLIT) * height - SPACER) / maxBin);
         offY = SPLIT * height + SPACER;
 
@@ -183,7 +188,8 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
 
         const axis = d3
           .axisTop(scaleArcX)
-          .tickFormat((d, i) => (i === 0 ? `${d} miles` : d));
+          .ticks(mobile ? 5 : 10)
+          .tickFormat((d, i) => (i === 0 ? `${d} mi.` : d));
 
         $axis
           .call(axis)

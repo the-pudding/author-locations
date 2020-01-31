@@ -1,7 +1,4 @@
 /* CUSTOM STORY STYLE */
-body
-	overflow-x hidden
-
 p
 	set-type-size(medium)
 
@@ -18,9 +15,12 @@ svg
 	display block
 
 	text
-		set-type-size(x-small)
+		set-type-size(xx-small)
 		font-family $sans-display
 		fill $gray-dark
+
+		+mq('bp-4')
+			set-type-size(x-small)
 
 mark
 	padding 0 0.25em

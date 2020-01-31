@@ -1,4 +1,5 @@
 /* global d3 */
+import 'intersection-observer';
 import scrollama from 'scrollama';
 import loadData from './load-data';
 import './pudding-chart/arc-histogram';
@@ -12,10 +13,12 @@ const scroller = scrollama();
 let binSize = 0;
 
 let chart = null;
+let mobile = false;
 
 function updateDimensions() {
-  binSize = $section.node().offsetWidth < 960 ? 20 : 10;
-  const stepH = Math.floor(window.innerHeight * 0.75);
+  mobile = $section.node().offsetWidth < 960;
+  binSize = mobile ? 20 : 10;
+  const stepH = Math.floor(window.innerHeight * (mobile ? 1 : 0.825));
   $figure.style('height', `${window.innerHeight}px`);
   $step.style('height', `${stepH}px`);
   $step.style('margin-top', (d, i) =>
@@ -100,7 +103,7 @@ function setupScroller() {
   scroller
     .setup({
       step: '#distance article .step',
-      offset: 0.33,
+      offset: mobile ? 0.5 : 0.3,
       debug: false,
     })
     .onStepEnter(handleStepEnter);

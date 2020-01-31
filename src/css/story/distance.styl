@@ -7,6 +7,7 @@
 		position relative
 		margin 0 auto
 		max-width $column-width
+		width 90%
 		pointer-events none
 
 	.step
@@ -25,18 +26,21 @@
 		p
 			margin 0
 			padding 1rem
-			set-type-size(large)
 			border 2px solid $fg
 			background-color rgba($bg, 0.9)
+			set-type-size(small)
+
+			+mq('bp-4')
+				set-type-size(large)
 
 	figure
 		position sticky
 		top 0
 		left 0
 		z-index 0
-		margin 0
+		margin 0 auto
 		min-height 480px
-		width 100%
+		width 90%
 		transform translate3d(0, 0, 0)
 
 	.figure__chart
@@ -83,6 +87,11 @@
 
 		&.is-visible.is-active
 			visibility visible
+
+		&.is-mobile
+			top 55%
+			left 50%
+			transform translate(-50%, -50%)
 
 		p
 			margin 0
