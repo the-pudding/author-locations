@@ -52,11 +52,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       // called once at start
       init() {
         $svg = $sel.append('svg').attr('class', 'pudding-chart');
-        const $g = $svg.append('g');
-
-        // offset chart for margins
-        $g.attr('transform', `translate(${marginLeft}, ${marginTop})`);
-
         // create axis
         $axes = $svg
           .append('g')
@@ -67,13 +62,18 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
         $axes.append('g').attr('class', 'book__axis');
 
+        const $g = $svg.append('g');
+
+        // offset chart for margins
+        $g.attr('transform', `translate(${marginLeft}, ${marginTop})`);
+
         // setup viz group
         $vis = $g.append('g').attr('class', 'g-vis');
 
         // add group for author rectangles
+        $connections = $vis.append('g').attr('class', 'g-connections');
         $authors = $vis.append('g').attr('class', 'g-authors');
         $books = $vis.append('g').attr('class', 'g-books');
-        $connections = $vis.append('g').attr('class', 'g-connections');
 
         // put all authors on same x scale of age
         scaleX.domain([0, oldest]).ticks(5);
@@ -158,6 +158,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       render() {
         // setting up color scale
         // scaleColor.domain([uniqueLocs]);
+        const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
+        console.log({ matchesOnly });
 
         // add in author locations
         $authors
@@ -175,7 +177,12 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           )
           .attr('height', d =>
             vertical ? scaleY(d.end_age) - scaleY(d.start_age) : barHeight
-          );
+          )
+          .classed('matched', d => {
+            const mids = matchesOnly.map(d => d.mid);
+            console.log({ check: mids.includes(d.mid) });
+            return mids.includes(d.mid);
+          });
 
         // add in book releases (beeswarm to prevent overlap)
         const simulation = d3
@@ -207,7 +214,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
         // add connecting lines to places lived
         // filtering data
-        const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
 
         $connections
           .selectAll('.connection__lived')
