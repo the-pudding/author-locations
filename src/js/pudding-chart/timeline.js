@@ -47,6 +47,33 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let matchedLocs = null;
 
     // helper functions
+    function handleBookHover() {
+      const sel = d3.select(this);
+      const loc = sel.attr('data-loc');
+      const allLocs = loc.split(';').map(d => d.trim());
+
+      // find matching connections
+      const lived = $sel.selectAll('.connection__lived');
+      lived.classed('is-dimmed', true);
+      lived
+        .filter((d, i, n) => {
+          const thisLoc = d3.select(n[i]).attr('data-loc');
+          return allLocs.includes(thisLoc);
+        })
+        .classed('is-dimmed', false);
+
+      // find matching blocks
+      const blocks = $sel.selectAll('.author__location');
+      blocks.classed('is-dimmed', true);
+      blocks
+        .filter((d, i, n) => {
+          const thisLoc = d3.select(n[i]).attr('data-loc');
+          return allLocs.includes(thisLoc);
+        })
+        .classed('is-dimmed', false);
+
+      // TODO search for all loc matches in data-loc
+    }
 
     const Chart = {
       // called once at start
@@ -169,7 +196,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         const mids = matchesOnly.map(d => d.mid);
         // adding places never lived
         const neverLocs = books.filter(d => !d.match.length);
-        console.log({ neverLocs });
         const neverBooks = [...new Set(neverLocs.map(d => d.title))];
 
         // add in author locations
@@ -189,9 +215,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('height', d =>
             vertical ? scaleY(d.end_age) - scaleY(d.start_age) : barHeight
           )
-          .classed('matched', d => {
-            return mids.includes(d.mid);
-          });
+          .classed('matched', d => mids.includes(d.mid))
+          .attr('data-mid', d => d.mid)
+          .attr('data-loc', d => d.location);
 
         // add in book releases (beeswarm to prevent overlap)
         const simulation = d3
@@ -227,7 +253,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .join(enter => enter.append('circle').attr('class', 'book'))
           .attr('cx', d => d.x)
           .attr('cy', d => d.y)
-          .attr('r', RADIUS);
+          .attr('r', RADIUS)
+          .attr('data-loc', d => {
+            return d.value.values[0].match;
+          })
+          .on('mouseover', handleBookHover);
 
         // add connecting lines to places lived
         // filtering data
@@ -269,10 +299,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
             const joined = path.join(' ');
             return joined;
-          });
+          })
+          .attr('data-mid', d => d.mid)
+          .attr('data-loc', d => d.location);
 
         // // add names above lived in places with matches
-        console.log({ matchedLocs });
 
         $vis
           .selectAll('.cities__lived')
@@ -298,8 +329,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .map(e => Math.abs(d.mid - e < 5) && d.mid - e > 0)
               .filter(e => e === true);
 
-            console.log({ len: check.length, check });
             return check.length > 0 === true;
+          })
+          .attr('data-mid', d => {
+            console.log({ lived: d });
+            return d.mid;
           });
 
         const neverNest = d3
@@ -325,7 +359,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
             vertical
               ? `translate(${bookLine}, ${scaleY(d.value.year)})`
               : `translate(${scaleX(d.value.year)}, ${bookLine})`
-          );
+          )
+          .attr('data-mid', d => {
+            console.log({ d });
+            return d.value.year;
+          });
 
         $gNever
           .selectAll('.cities__never')

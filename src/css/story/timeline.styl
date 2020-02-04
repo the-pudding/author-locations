@@ -51,13 +51,19 @@
 		fill $secondary
 		stroke-width 2px
 		stroke $fg
+		opacity 1
 		&.matched 
 			fill $red
+		&.is-dimmed 
+			opacity 0.5
 
 	path.connection__lived
 		fill none
 		stroke-width 2px
 		stroke $fg
+		opacity 1
+		&.is-dimmed 
+			opacity 0.5
 
 	.book 
 		&__never 
