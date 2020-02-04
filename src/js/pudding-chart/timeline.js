@@ -19,8 +19,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     // dimension stuff
     let width = 0;
     let height = 0;
-    const marginTop = 0;
-    const marginBottom = 0;
+    const marginTop = 16;
+    const marginBottom = 16;
     const marginLeft = 50;
     const marginRight = 50;
     const barHeight = 20;
@@ -76,8 +76,14 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $books = $vis.append('g').attr('class', 'g-books');
 
         // put all authors on same x scale of age
-        scaleX.domain([0, oldest]).ticks(5);
-        scaleY.domain([0, oldest]).ticks(5);
+        scaleX
+          .domain([0, oldest])
+          // .ticks(5)
+          .tickFormat((d, i) => (i === 0 ? `${d} years old` : d));
+        scaleY
+          .domain([0, oldest])
+          // .ticks(5)
+          .tickFormat((d, i) => (i === 0 ? `${d} years old` : d));
 
         // nest locations by book
         nestedBooks = d3
@@ -139,8 +145,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr(
             'transform',
             vertical
-              ? `translate(${authorLine}, 0)`
-              : `translate(0, ${authorLine})`
+              ? `translate(${authorLine}, +marginTop)`
+              : `translate(0, ${authorLine + marginBottom})`
           )
           .call(vertical ? d3.axisLeft(scaleY) : d3.axisTop(scaleX));
 
@@ -159,7 +165,12 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         // setting up color scale
         // scaleColor.domain([uniqueLocs]);
         const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
-        console.log({ matchesOnly });
+        // only unique midpoints
+        const mids = matchesOnly.map(d => d.mid);
+        // adding places never lived
+        const neverLocs = books.filter(d => !d.match.length);
+        console.log({ neverLocs });
+        const neverBooks = [...new Set(neverLocs.map(d => d.title))];
 
         // add in author locations
         $authors
@@ -179,8 +190,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
             vertical ? scaleY(d.end_age) - scaleY(d.start_age) : barHeight
           )
           .classed('matched', d => {
-            const mids = matchesOnly.map(d => d.mid);
-            console.log({ check: mids.includes(d.mid) });
             return mids.includes(d.mid);
           });
 
@@ -203,6 +212,14 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .stop();
 
         for (let i = 0; i < 120; i += 1) simulation.tick();
+        // adding an extra circle for books with never-visited locations
+        $books
+          .selectAll('.book__never')
+          .data(nestedBooks.filter(d => neverBooks.includes(d.key)))
+          .join(enter => enter.append('circle').attr('class', 'book__never'))
+          .attr('cx', d => d.x)
+          .attr('cy', d => d.y)
+          .attr('r', RADIUS + 3);
 
         $books
           .selectAll('.book')
@@ -255,6 +272,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           });
 
         // // add names above lived in places with matches
+        console.log({ matchedLocs });
 
         $vis
           .selectAll('.cities__lived')
@@ -269,13 +287,21 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           )
           .attr('transform', d =>
             vertical
-              ? `translate(${authorLine - barHeight}, ${scaleY(d.mid)})`
-              : `translate(${scaleX(d.mid)}, ${authorLine - barHeight / 2})`
+              ? `translate(${authorLine - barHeight * 2}, ${scaleY(d.mid)})`
+              : `translate(${scaleX(d.mid)}, ${authorLine - barHeight})`
           )
-          .style('font-size', FONT_SIZE);
+          .style('font-size', FONT_SIZE)
+          .classed('is-hidden', d => {
+            const uniqueMids = [...new Set(mids.filter(e => e !== d.mid))];
 
-        // adding places never lived
-        const neverLocs = books.filter(d => !d.match.length);
+            const check = uniqueMids
+              .map(e => Math.abs(d.mid - e < 5) && d.mid - e > 0)
+              .filter(e => e === true);
+
+            console.log({ len: check.length, check });
+            return check.length > 0 === true;
+          });
+
         const neverNest = d3
           .nest()
           .key(d => d.title)
@@ -287,10 +313,14 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           })
           .entries(neverLocs);
 
+        console.log({ neverNest });
+
         const $gNever = $vis
           .selectAll('.group__never')
           .data(neverNest)
-          .join(enter => enter.append('g').attr('class', 'group__never'))
+          .join(enter =>
+            enter.append('g').attr('class', 'group__never is-hidden')
+          )
           .attr('transform', d =>
             vertical
               ? `translate(${bookLine}, ${scaleY(d.value.year)})`
