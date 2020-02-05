@@ -1,17 +1,24 @@
 <section id='timeline' data-js='timeline'>
-		<div class='timeline__intro'>
-			<h2 class='intro__hed'>{{doc.timelineHed}}</h2>
-			<p  class='intro__dek'>{{doc.timelineDek}}</p>
-		</div>
-		
+    <div class='timeline__intro'>
+        <h2 class='intro__hed'>{{doc.timelineHed}}</h2>
+        <p class='intro__dek'>{{doc.timelineDek}}</p>
+    </div>
+
     {{#each doc.deep-dive}}
     <div class='timeline__author'>
-				<div class='author__info'>
-					<h3 class='info__name'>{{{name}}}</h3>
-					<p class='info__lifespan'>{{{lifespan}}}</p>
-				</div>
-        <figure class='author__figure' data-js='author__figure' data-author={{{slug}}}></figure>
-				<p class='author__text'>{{{text}}}</p>
+        <div class='author__info'>
+            <h3 class='info__name'>{{{name}}}</h3>
+            <p class='info__lifespan'>{{{lifespan}}}</p>
+        </div>
+        <figure class='author__figure' data-js='author__figure' data-author={{{slug}}}>
+            <div data-js='figure__tooltip' class='figure__tooltip'>
+                <p class='tooltip__book' data-js='tooltip__book'>Title: <span></span></p>
+                <p class='tooltip__author' data-js='tooltip__author'>Author: <span></span></p>
+                <p class='tooltip__location' data-js='tooltip__residence'>Residence(s): <span></span></p>
+                <p class='tooltip__location' data-js='tooltip__setting'>Setting(s): <span></span></p>
+            </div>
+        </figure>
+        <p class='author__text'>{{{text}}}</p>
     </div>
     {{/each}}
 

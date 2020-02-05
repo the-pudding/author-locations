@@ -28,9 +28,10 @@ function findMatches(d) {
       location: e.location.trim(),
       mid: e.mid,
     }))
-    .sort((a, b) => d3.ascending(a.mid, b.mid));
-
-  const mostRecent = matches.pop();
+    .sort((a, b) => d3.descending(a.mid, b.mid));
+  // this is where most recent matches.pop() was
+  console.log({ matches });
+  const mostRecent = matches;
   return mostRecent;
 }
 

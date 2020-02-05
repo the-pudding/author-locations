@@ -11,6 +11,7 @@
 d3.selection.prototype.puddingChartTimeline = function init(options) {
   function createChart(el) {
     const $sel = d3.select(el);
+    const $tooltip = $sel.select('[data-js="figure__tooltip"]');
     let data = $sel.datum();
 
     const authorLocations = data.filteredAuthors[0].values;
@@ -47,23 +48,27 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let matchedLocs = null;
 
     // helper functions
-    function handleBookHover() {
+    function handleBookHover(d) {
       const sel = d3.select(this);
       const loc = sel.attr('data-loc');
       const year = sel.attr('data-age');
       const allLocs = loc.split(';').map(d => d.trim());
 
       // find matching connections
-      const lived = $sel.selectAll('.connection__lived');
-      lived.classed('is-dimmed', true);
-      lived
+      const lived = $sel.selectAll('.latest');
+
+      lived.classed('is-dimmed', true).classed('is-hidden', false);
+
+      const allConn = $sel
+        .selectAll('.connection__lived')
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
           const check = allLocs.includes(thisLoc) && +year === d.pub_age;
-          console.log({ d, year });
+          console.log({ check });
           return check;
         })
-        .classed('is-dimmed', false);
+        .classed('is-dimmed', false)
+        .classed('is-hidden', false);
 
       // find matching blocks
       const blocks = $sel.selectAll('.author__location');
@@ -76,11 +81,31 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         })
         .classed('is-dimmed', false);
 
+      // update tooltip
+      const bookInfo = d.value.values;
+      $tooltip.select("[data-js='tooltip__book'] span").text(bookInfo[0].title);
+      $tooltip.select("[data-js='tooltip__residence'] span").text(f => {
+        const allMatches = f.filteredAuthors;
+        console.log({ f });
+
+        return allMatches.join(', ');
+      });
+      // $tooltip
+      //   .select("[data-js='tooltip__setting'] span")
+      //   .text(d.setting.join(', '));
+      // $tooltip
+      //   .select("[data-js='tooltip__distance'] span")
+      //   .text(`${Math.round(d.distance)} miles`);
+
       // TODO search for all loc matches in data-loc
     }
 
     function handleMouseOut() {
-      $sel.selectAll('.connection__lived').classed('is-dimmed', false);
+      $sel
+        .selectAll('.connection__lived')
+        .classed('is-dimmed', false)
+        .classed('is-hidden', true);
+      $sel.selectAll('.latest').classed('is-hidden', false);
       $sel.selectAll('.author__location').classed('is-dimmed', false);
     }
 
@@ -200,7 +225,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       render() {
         // setting up color scale
         // scaleColor.domain([uniqueLocs]);
-        const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
+        const matchesOnly = bookLocs
+          .map(d => d.match_locs)
+          .filter(d => d.length);
 
         // only unique midpoints
         const mids = matchesOnly.map(d => d.mid);
@@ -279,9 +306,19 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         // add connecting lines to places lived
         // filtering data
 
+        // add connecting line groups
         $connections
-          .selectAll('.connection__lived')
+          .selectAll('.g__connections')
           .data(matchesOnly)
+          .join(enter => {
+            const groups = enter
+              .append('g')
+              .attr('class', 'group__connections');
+
+            return groups;
+          })
+          .selectAll('.connection__lived')
+          .data(d => d)
           .join(enter =>
             enter.append('path').attr('class', 'connection__lived')
           )
@@ -319,7 +356,12 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           })
           .attr('data-mid', d => d.mid)
           .attr('data-loc', d => d.location)
-          .attr('data-age', d => d.pub_age);
+          .attr('data-age', d => d.pub_age)
+          .classed('is-hidden', (d, i) => {
+            console.log({ d, i });
+            return i !== 0;
+          })
+          .classed('latest', (d, i) => i === 0);
 
         // // add names above lived in places with matches
 
