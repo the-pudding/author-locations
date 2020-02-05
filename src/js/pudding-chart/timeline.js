@@ -50,6 +50,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     function handleBookHover() {
       const sel = d3.select(this);
       const loc = sel.attr('data-loc');
+      const year = sel.attr('data-age');
       const allLocs = loc.split(';').map(d => d.trim());
 
       // find matching connections
@@ -58,21 +59,29 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       lived
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
-          return allLocs.includes(thisLoc);
+          const check = allLocs.includes(thisLoc) && +year === d.pub_age;
+          console.log({ d, year });
+          return check;
         })
         .classed('is-dimmed', false);
 
       // find matching blocks
       const blocks = $sel.selectAll('.author__location');
       blocks.classed('is-dimmed', true);
-      blocks
+      const filteredBlocks = blocks
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
-          return allLocs.includes(thisLoc);
+          const check = allLocs.includes(thisLoc) && d.start_age <= year;
+          return check;
         })
         .classed('is-dimmed', false);
 
       // TODO search for all loc matches in data-loc
+    }
+
+    function handleMouseOut() {
+      $sel.selectAll('.connection__lived').classed('is-dimmed', false);
+      $sel.selectAll('.author__location').classed('is-dimmed', false);
     }
 
     const Chart = {
@@ -192,6 +201,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         // setting up color scale
         // scaleColor.domain([uniqueLocs]);
         const matchesOnly = bookLocs.map(d => d.match_locs).filter(d => d);
+
         // only unique midpoints
         const mids = matchesOnly.map(d => d.mid);
         // adding places never lived
@@ -255,9 +265,16 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('cy', d => d.y)
           .attr('r', RADIUS)
           .attr('data-loc', d => {
-            return d.value.values[0].match;
+            const vals = d.value.values;
+            const locMatches = vals.map(e => e.match);
+            const locString = locMatches.join('; ');
+            return locString;
           })
-          .on('mouseover', handleBookHover);
+          .attr('data-age', d => {
+            return d.value.values[0].pub_age;
+          })
+          .on('mouseover', handleBookHover)
+          .on('mouseout', handleMouseOut);
 
         // add connecting lines to places lived
         // filtering data
@@ -301,7 +318,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
             return joined;
           })
           .attr('data-mid', d => d.mid)
-          .attr('data-loc', d => d.location);
+          .attr('data-loc', d => d.location)
+          .attr('data-age', d => d.pub_age);
 
         // // add names above lived in places with matches
 
@@ -331,10 +349,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
             return check.length > 0 === true;
           })
-          .attr('data-mid', d => {
-            console.log({ lived: d });
-            return d.mid;
-          });
+          .attr('data-mid', d => d.mid);
 
         const neverNest = d3
           .nest()
@@ -347,8 +362,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           })
           .entries(neverLocs);
 
-        console.log({ neverNest });
-
         const $gNever = $vis
           .selectAll('.group__never')
           .data(neverNest)
@@ -360,10 +373,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               ? `translate(${bookLine}, ${scaleY(d.value.year)})`
               : `translate(${scaleX(d.value.year)}, ${bookLine})`
           )
-          .attr('data-mid', d => {
-            console.log({ d });
-            return d.value.year;
-          });
+          .attr('data-mid', d => d.value.year);
 
         $gNever
           .selectAll('.cities__never')
