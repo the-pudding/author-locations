@@ -73,7 +73,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       // find matching blocks
       const blocks = $sel.selectAll('.author__location');
       blocks.classed('is-dimmed', true);
-      const filteredBlocks = blocks
+      blocks
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
           const check = allLocs.includes(thisLoc) && d.start_age <= year;
@@ -85,14 +85,27 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       const bookInfo = d.value.values;
       $tooltip.select("[data-js='tooltip__book'] span").text(bookInfo[0].title);
       $tooltip.select("[data-js='tooltip__residence'] span").text(f => {
-        const allMatches = f.filteredAuthors;
-        console.log({ f });
+        const allMatches = bookInfo
+          .filter(g => g.match_locs.length)
+          .map(g => {
+            const match = g.match_locs
+              .map(h => {
+                return h.location;
+              })
+              .filter(g => g);
+            return match.join('; ');
+          });
+        const str = allMatches.join('; ');
 
-        return allMatches.join(', ');
+        return str;
       });
-      // $tooltip
-      //   .select("[data-js='tooltip__setting'] span")
-      //   .text(d.setting.join(', '));
+
+      const neverLived = bookInfo.filter(e => !e.match.length);
+      $tooltip.select("[data-js='tooltip__setting'] span").text(() => {
+        const locations = neverLived.map(g => g.location);
+        return locations.join('; ');
+      });
+
       // $tooltip
       //   .select("[data-js='tooltip__distance'] span")
       //   .text(`${Math.round(d.distance)} miles`);
