@@ -154,10 +154,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $books = $vis.append('g').attr('class', 'g-books');
 
         // put all authors on same x scale of age
-        scaleX
-          .domain([0, oldest])
-          // .ticks(5)
-          .tickFormat((d, i) => (i === 0 ? `${d} years old` : d));
+        scaleX.domain([0, oldest]);
+        // .ticks(5)
+
         scaleY
           .domain([0, oldest])
           // .ticks(5)
@@ -205,12 +204,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         // defaults to grabbing dimensions from container element
         width = $sel.node().offsetWidth - marginLeft - marginRight;
         height = $sel.node().offsetHeight - marginTop - marginBottom;
-        console.log({ height });
         $svg
           .attr('width', width + marginLeft + marginRight)
           .attr('height', height + marginTop + marginBottom);
-
-
 
         // flip graphic if portrait instead of landscape orientation
         vertical = window.innerHeight > window.innerWidth;
@@ -230,7 +226,15 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               ? `translate(${authorLine}, 0)`
               : `translate(0, ${authorLine})`
           )
-          .call(vertical ? d3.axisLeft(scaleY) : d3.axisTop(scaleX));
+          .call(
+            vertical
+              ? d3
+                .axisLeft(scaleY)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+              : d3
+                .axisTop(scaleX)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+          );
 
         $axes
           .select('.book__axis')
@@ -238,7 +242,15 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
             'transform',
             vertical ? `translate(${bookLine}, 0)` : `translate(0, ${bookLine})`
           )
-          .call(vertical ? d3.axisRight(scaleY) : d3.axisBottom(scaleX));
+          .call(
+            vertical
+              ? d3
+                .axisRight(scaleY)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+              : d3
+                .axisBottom(scaleX)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+          );
 
         return Chart;
       },
@@ -261,12 +273,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .selectAll('.author__location')
           .data(authorLocations, d => d.start_age)
           .join(enter => enter.append('rect').attr('class', 'author__location'))
-          .attr('x', d =>
-            vertical ? authorLine : scaleX(d.start_age)
-          )
-          .attr('y', d =>
-            vertical ? scaleY(d.start_age) : authorLine
-          )
+          .attr('x', d => (vertical ? authorLine : scaleX(d.start_age)))
+          .attr('y', d => (vertical ? scaleY(d.start_age) : authorLine))
           .attr('width', d =>
             vertical ? barHeight : scaleX(d.end_age) - scaleX(d.start_age)
           )
