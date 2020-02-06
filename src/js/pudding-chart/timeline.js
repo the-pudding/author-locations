@@ -54,18 +54,43 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       handleMouseOut();
       const allBooks = $sel.selectAll('.book');
 
-      const hovered = allBooks.data();
+      const hovered = allBooks
+        .data()
+        .sort((a, b) => d3.ascending(a.value.year, b.value.year));
 
-      const bisectAge = d3.bisector(d => d.value.year).left;
+      const bisectAge = d3.bisector(f => f.value.year).left;
+
       const x0 = scaleX.invert(d3.mouse(this)[0]);
+      console.log({ x0 });
       const i = bisectAge(hovered, x0, 1);
       const d0 = hovered[i - 1];
       const d1 = hovered[i];
+      console.log({
+        x0,
+        d0,
+        d1,
+        first: x0 - d0.value.year,
+        second: d1.value.year - x0,
+      });
       const e = x0 - d0.value.year > d1.value.year - x0 ? d1 : d0;
 
-      const sel = d3.select(this);
-      const allLocs = e.value.values.map(f => f.location);
+      console.log({ e });
+
+      const allLocs = e.value.values
+        .filter(g => g.match_locs.length)
+        .map(g => {
+          const match = g.match_locs
+            .map(h => {
+              return h.location.trim();
+            })
+            .filter(g => g);
+
+          return match;
+        })
+        .flat();
       const year = e.value.values[0].pub_age;
+
+      console.log(allLocs);
       // const allLocs = loc.split(';').map(d => d.trim());
 
       // find matching connections
@@ -89,6 +114,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       blocks
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
+          console.log({ allLocs, thisLoc });
           const check = allLocs.includes(thisLoc) && d.start_age <= year;
           return check;
         })
@@ -160,7 +186,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $hoverRect = $svg
           .append('rect')
           .attr('class', 'rect__hover')
-          .on('mousemove touchstart', handleBookHover);
+          .on('mousemove touchstart', handleBookHover)
+          .attr('transform', `translate(${marginLeft}, ${marginTop})`);
 
         // offset chart for margins
         $g.attr('transform', `translate(${marginLeft}, ${marginTop})`);
@@ -229,9 +256,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('height', height + marginTop + marginBottom);
 
         // set rectangle to be same size as graphic
-        $hoverRect
-          .attr('width', width + marginLeft + marginRight)
-          .attr('height', height + marginTop + marginBottom);
+        $hoverRect.attr('width', width).attr('height', height);
 
         // flip graphic if portrait instead of landscape orientation
         vertical = window.innerHeight > window.innerWidth;
