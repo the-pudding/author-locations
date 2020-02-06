@@ -11,7 +11,8 @@
 d3.selection.prototype.puddingChartTimeline = function init(options) {
   function createChart(el) {
     const $sel = d3.select(el);
-    const $tooltip = $sel.select('[data-js="figure__tooltip"]');
+    const $parent = d3.select(el.parentNode);
+    const $tooltip = $parent.select('[data-js="figure__tooltip"]');
     let data = $sel.datum();
 
     const authorLocations = data.filteredAuthors[0].values;
@@ -200,22 +201,24 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       },
       // on resize, update new dimensions
       resize() {
+        $sel.classed('vertical', vertical);
         // defaults to grabbing dimensions from container element
         width = $sel.node().offsetWidth - marginLeft - marginRight;
         height = $sel.node().offsetHeight - marginTop - marginBottom;
+        console.log({ height });
         $svg
           .attr('width', width + marginLeft + marginRight)
           .attr('height', height + marginTop + marginBottom);
 
-        $sel.classed('vertical', vertical);
+
 
         // flip graphic if portrait instead of landscape orientation
         vertical = window.innerHeight > window.innerWidth;
 
         scaleX.range([0, width]);
         scaleY.range([0, height]);
-        authorLine = vertical ? width * 0.25 : height * 0.25;
-        bookLine = vertical ? width * 0.75 : height * 0.75;
+        authorLine = vertical ? width * 0.25 : marginTop;
+        bookLine = vertical ? width * 0.75 : height - marginBottom;
 
         // setting up both underlying axes
 
@@ -259,10 +262,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .data(authorLocations, d => d.start_age)
           .join(enter => enter.append('rect').attr('class', 'author__location'))
           .attr('x', d =>
-            vertical ? authorLine - barHeight / 2 : scaleX(d.start_age)
+            vertical ? authorLine : scaleX(d.start_age)
           )
           .attr('y', d =>
-            vertical ? scaleY(d.start_age) : authorLine - barHeight / 2
+            vertical ? scaleY(d.start_age) : authorLine
           )
           .attr('width', d =>
             vertical ? barHeight : scaleX(d.end_age) - scaleX(d.start_age)
