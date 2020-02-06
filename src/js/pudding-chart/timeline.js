@@ -328,13 +328,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $connections
           .selectAll('.g__connections')
           .data(matchesOnly)
-          .join(enter => {
-            const groups = enter
-              .append('g')
-              .attr('class', 'group__connections');
-
-            return groups;
-          })
+          .join(enter => enter.append('g').attr('class', 'g__connections'))
           .selectAll('.connection__lived')
           .data(d => d)
           .join(enter =>
