@@ -73,9 +73,15 @@
 
 	.book 
 		cursor pointer
+		opacity 1
+		&.is-dimmed 
+			opacity 0.2
 		&__never 
 			fill $red
 			pointer-events none
+			opacity 1
+			&.is-dimmed
+				opacity 0.2
 
 	.group__never 
 		opacity 1

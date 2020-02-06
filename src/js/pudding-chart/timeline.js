@@ -61,20 +61,12 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       const bisectAge = d3.bisector(f => f.value.year).left;
 
       const x0 = scaleX.invert(d3.mouse(this)[0]);
-      console.log({ x0 });
-      const i = bisectAge(hovered, x0, 1);
+      console.log({ len: allBooks.size() });
+
+      const i = Math.min(bisectAge(hovered, x0, 1), allBooks.size() - 1);
       const d0 = hovered[i - 1];
       const d1 = hovered[i];
-      console.log({
-        x0,
-        d0,
-        d1,
-        first: x0 - d0.value.year,
-        second: d1.value.year - x0,
-      });
       const e = x0 - d0.value.year > d1.value.year - x0 ? d1 : d0;
-
-      console.log({ e });
 
       const allLocs = e.value.values
         .filter(g => g.match_locs.length)
@@ -83,15 +75,26 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
             .map(h => {
               return h.location.trim();
             })
-            .filter(g => g);
+            .filter(j => j);
 
           return match;
         })
         .flat();
       const year = e.value.values[0].pub_age;
 
-      console.log(allLocs);
-      // const allLocs = loc.split(';').map(d => d.trim());
+      console.log({ hovered, allBooks, e });
+      // find matching books
+      allBooks.classed('is-dimmed', true);
+      allBooks
+        .filter((g, index, n) => {
+          const age = d3.select(n[index]).attr('data-age');
+          const selAge = e.value.values[0].pub_age;
+          console.log({ age, selAge });
+          return +age === selAge;
+        })
+        .classed('is-dimmed', false);
+
+      $sel.selectAll('.book__never').classed('is-dimmed', true)
 
       // find matching connections
       const lived = $sel.selectAll('.latest');
@@ -114,7 +117,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       blocks
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
-          console.log({ allLocs, thisLoc });
           const check = allLocs.includes(thisLoc) && d.start_age <= year;
           return check;
         })
@@ -163,6 +165,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .selectAll('.author__location')
         .classed('is-dimmed', false)
         .classed('match', false);
+      $sel.selectAll('.book').classed('is-dimmed', false)
+      $sel.selectAll('.book__never').classed('is-dimmed', false)
     }
 
     const Chart = {
@@ -187,6 +191,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .append('rect')
           .attr('class', 'rect__hover')
           .on('mousemove touchstart', handleBookHover)
+          .on('mouseout', handleMouseOut)
           .attr('transform', `translate(${marginLeft}, ${marginTop})`);
 
         // offset chart for margins
@@ -279,11 +284,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                  .axisLeft(scaleY)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisLeft(scaleY)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                  .axisTop(scaleX)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisTop(scaleX)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         $axes
@@ -295,11 +300,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                  .axisRight(scaleY)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisRight(scaleY)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                  .axisBottom(scaleX)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisBottom(scaleX)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         return Chart;
