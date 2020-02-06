@@ -19,7 +19,9 @@
 
 	.author__figure
 		margin 2rem auto
-		min-height 450px
+		max-height 350px
+		&.vertical
+			min-height 450px
 
 	.g-axis
 		path
@@ -52,7 +54,7 @@
 		stroke-width 2px
 		stroke $fg
 		opacity 1
-		&.matched 
+		&.match
 			fill $red
 		&.is-dimmed 
 			opacity 0.5
@@ -82,4 +84,23 @@
 		opacity 1
 		&.is-hidden 
 			opacity 0
+
+	.figure__tooltip
+		border 2px solid $fg
+		background $bg
+		color $fg
+		font-family $sans-display
+		pointer-events none
+		max-width $column-width
+		margin 0 auto
+		min-height 160px
+		padding 0.5rem 1rem
+
+
+		p
+			margin 0
+			set-type-size(small)
+
+		span
+			font-weight bold
 	

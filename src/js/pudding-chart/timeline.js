@@ -64,7 +64,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .filter((d, i, n) => {
           const thisLoc = d3.select(n[i]).attr('data-loc');
           const check = allLocs.includes(thisLoc) && +year === d.pub_age;
-          console.log({ check });
           return check;
         })
         .classed('is-dimmed', false)
@@ -79,7 +78,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           const check = allLocs.includes(thisLoc) && d.start_age <= year;
           return check;
         })
-        .classed('is-dimmed', false);
+        .classed('is-dimmed', false)
+        .classed('match', true);
 
       // update tooltip
       const bookInfo = d.value.values;
@@ -119,7 +119,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .classed('is-dimmed', false)
         .classed('is-hidden', true);
       $sel.selectAll('.latest').classed('is-hidden', false);
-      $sel.selectAll('.author__location').classed('is-dimmed', false);
+      $sel
+        .selectAll('.author__location')
+        .classed('is-dimmed', false)
+        .classed('match', false);
     }
 
     const Chart = {
@@ -204,6 +207,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('width', width + marginLeft + marginRight)
           .attr('height', height + marginTop + marginBottom);
 
+        $sel.classed('vertical', vertical);
+
         // flip graphic if portrait instead of landscape orientation
         vertical = window.innerHeight > window.innerWidth;
 
@@ -219,8 +224,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr(
             'transform',
             vertical
-              ? `translate(${authorLine}, +marginTop)`
-              : `translate(0, ${authorLine + marginBottom})`
+              ? `translate(${authorLine}, 0)`
+              : `translate(0, ${authorLine})`
           )
           .call(vertical ? d3.axisLeft(scaleY) : d3.axisTop(scaleX));
 
@@ -371,7 +376,6 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('data-loc', d => d.location)
           .attr('data-age', d => d.pub_age)
           .classed('is-hidden', (d, i) => {
-            console.log({ d, i });
             return i !== 0;
           })
           .classed('latest', (d, i) => i === 0);
@@ -389,11 +393,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
               .attr('text-anchor', 'middle')
               .attr('alignment-baseline', 'bottom')
           )
-          .attr('transform', d =>
-            vertical
-              ? `translate(${authorLine - barHeight * 2}, ${scaleY(d.mid)})`
-              : `translate(${scaleX(d.mid)}, ${authorLine - barHeight})`
-          )
+          // .attr('transform', d =>
+          //   vertical
+          //     ? `translate(${authorLine - barHeight * 2}, ${scaleY(d.mid)})`
+          //     : `translate(${scaleX(d.mid)}, ${authorLine - barHeight})`
+          // )
           .style('font-size', FONT_SIZE)
           .classed('is-hidden', d => {
             const uniqueMids = [...new Set(mids.filter(e => e !== d.mid))];
