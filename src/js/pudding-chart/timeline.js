@@ -21,7 +21,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     // dimension stuff
     let width = 0;
     let height = 0;
-    const marginTop = 16;
+    const marginTop = 32;
     const marginBottom = 16;
     const marginLeft = 50;
     const marginRight = 50;
@@ -31,7 +31,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let authorLine = null;
     let bookLine = null;
     const FONT_SIZE = 12;
-    let vertical = false;
+    let vertical = window.innerHeight > window.innerWidth;
 
     // scales
     const scaleX = d3.scaleLinear();
@@ -60,8 +60,9 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
 
       const bisectAge = d3.bisector(f => f.value.year).left;
 
-      const x0 = scaleX.invert(d3.mouse(this)[0]);
-      console.log({ len: allBooks.size() });
+      const x0 = vertical
+        ? scaleY.invert(d3.mouse(this)[1])
+        : scaleX.invert(d3.mouse(this)[0]);
 
       const i = Math.min(bisectAge(hovered, x0, 1), allBooks.size() - 1);
       const d0 = hovered[i - 1];
@@ -81,20 +82,17 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         })
         .flat();
       const year = e.value.values[0].pub_age;
-
-      console.log({ hovered, allBooks, e });
       // find matching books
       allBooks.classed('is-dimmed', true);
       allBooks
         .filter((g, index, n) => {
           const age = d3.select(n[index]).attr('data-age');
           const selAge = e.value.values[0].pub_age;
-          console.log({ age, selAge });
           return +age === selAge;
         })
         .classed('is-dimmed', false);
 
-      $sel.selectAll('.book__never').classed('is-dimmed', true)
+      $sel.selectAll('.book__never').classed('is-dimmed', true);
 
       // find matching connections
       const lived = $sel.selectAll('.latest');
@@ -165,8 +163,8 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .selectAll('.author__location')
         .classed('is-dimmed', false)
         .classed('match', false);
-      $sel.selectAll('.book').classed('is-dimmed', false)
-      $sel.selectAll('.book__never').classed('is-dimmed', false)
+      $sel.selectAll('.book').classed('is-dimmed', false);
+      $sel.selectAll('.book__never').classed('is-dimmed', false);
     }
 
     const Chart = {
@@ -284,11 +282,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                .axisLeft(scaleY)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisLeft(scaleY)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                .axisTop(scaleX)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisTop(scaleX)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         $axes
@@ -300,11 +298,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                .axisRight(scaleY)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisRight(scaleY)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                .axisBottom(scaleX)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisBottom(scaleX)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         return Chart;

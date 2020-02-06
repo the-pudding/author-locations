@@ -6,7 +6,6 @@ const $section = d3.select('[data-js="timeline"]');
 const $figures = $section.selectAll('[data-js="figure__chart"]');
 // const $article = $section.select('[data-js="distance__article"]');
 // const $step = $article.selectAll('[data-js="article__step"]');
-console.log({ $figures });
 
 let allData = null;
 let authorLocs = null;
