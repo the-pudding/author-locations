@@ -3,7 +3,7 @@ import loadData from './load-data';
 import './pudding-chart/timeline';
 
 const $section = d3.select('[data-js="timeline"]');
-const $figures = $section.selectAll('[data-js="author__figure"]');
+const $figures = $section.selectAll('[data-js="figure__chart"]');
 // const $article = $section.select('[data-js="distance__article"]');
 // const $step = $article.selectAll('[data-js="article__step"]');
 
@@ -28,9 +28,9 @@ function findMatches(d) {
       location: e.location.trim(),
       mid: e.mid,
     }))
-    .sort((a, b) => d3.ascending(a.mid, b.mid));
-
-  const mostRecent = matches.pop();
+    .sort((a, b) => d3.descending(a.mid, b.mid));
+  // this is where most recent matches.pop() was
+  const mostRecent = matches;
   return mostRecent;
 }
 
