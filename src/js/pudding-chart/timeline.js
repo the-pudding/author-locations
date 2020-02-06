@@ -172,6 +172,17 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       init() {
         $svg = $sel.append('svg').attr('class', 'pudding-chart');
 
+        // add labels
+        const $labels = $svg.append('g').attr('class', 'g-labels');
+        $labels
+          .append('text')
+          .attr('class', 'label__author label')
+          .text('City of Residence by Author Age');
+        $labels
+          .append('text')
+          .attr('class', 'label__book label')
+          .text('Books by Age at Publication');
+
         // create axis
         $axes = $svg
           .append('g')
@@ -268,6 +279,25 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         scaleY.range([0, height]);
         authorLine = vertical ? width * 0.25 : marginTop;
         bookLine = vertical ? width * 0.75 : height - marginBottom;
+
+        // arrange labels
+        $sel
+          .select('.label__author')
+          .attr(
+            'transform',
+            vertical
+              ? `translate(${marginLeft}, ${marginBottom})`
+              : `translate(0, ${marginTop})`
+          );
+        $sel
+          .select('.label__book')
+          .attr(
+            'transform',
+            vertical
+              ? `translate(${width}, ${marginBottom})`
+              : `translate(0, ${height})`
+          )
+          .attr('text-anchor', vertical ? 'middle' : 'start');
 
         // setting up both underlying axes
 
