@@ -45,15 +45,28 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let $authors = null;
     let $books = null;
     let $connections = null;
+    let $hoverRect = null;
     let bookLocs = null;
     let matchedLocs = null;
 
     // helper functions
     function handleBookHover(d) {
+      handleMouseOut();
+      const allBooks = $sel.selectAll('.book');
+
+      const hovered = allBooks.data();
+
+      const bisectAge = d3.bisector(d => d.value.year).left;
+      const x0 = scaleX.invert(d3.mouse(this)[0]);
+      const i = bisectAge(hovered, x0, 1);
+      const d0 = hovered[i - 1];
+      const d1 = hovered[i];
+      const e = x0 - d0.value.year > d1.value.year - x0 ? d1 : d0;
+
       const sel = d3.select(this);
-      const loc = sel.attr('data-loc');
-      const year = sel.attr('data-age');
-      const allLocs = loc.split(';').map(d => d.trim());
+      const allLocs = e.value.values.map(f => f.location);
+      const year = e.value.values[0].pub_age;
+      // const allLocs = loc.split(';').map(d => d.trim());
 
       // find matching connections
       const lived = $sel.selectAll('.latest');
@@ -83,7 +96,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .classed('match', true);
 
       // update tooltip
-      const bookInfo = d.value.values;
+      const bookInfo = e.value.values;
       $tooltip.select("[data-js='tooltip__book'] span").text(bookInfo[0].title);
       $tooltip.select("[data-js='tooltip__residence'] span").text(f => {
         const allMatches = bookInfo
@@ -130,6 +143,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
       // called once at start
       init() {
         $svg = $sel.append('svg').attr('class', 'pudding-chart');
+
         // create axis
         $axes = $svg
           .append('g')
@@ -141,6 +155,12 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         $axes.append('g').attr('class', 'book__axis');
 
         const $g = $svg.append('g');
+
+        // create rectangle to handle mouse events
+        $hoverRect = $svg
+          .append('rect')
+          .attr('class', 'rect__hover')
+          .on('mousemove touchstart', handleBookHover);
 
         // offset chart for margins
         $g.attr('transform', `translate(${marginLeft}, ${marginTop})`);
@@ -208,6 +228,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('width', width + marginLeft + marginRight)
           .attr('height', height + marginTop + marginBottom);
 
+        // set rectangle to be same size as graphic
+        $hoverRect
+          .attr('width', width + marginLeft + marginRight)
+          .attr('height', height + marginTop + marginBottom);
+
         // flip graphic if portrait instead of landscape orientation
         vertical = window.innerHeight > window.innerWidth;
 
@@ -229,11 +254,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                .axisLeft(scaleY)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisLeft(scaleY)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                .axisTop(scaleX)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisTop(scaleX)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         $axes
@@ -245,11 +270,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                .axisRight(scaleY)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisRight(scaleY)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                .axisBottom(scaleX)
-                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                  .axisBottom(scaleX)
+                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         return Chart;
