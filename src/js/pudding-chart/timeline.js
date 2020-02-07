@@ -137,13 +137,14 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           });
         const str = allMatches.join('; ');
 
-        return str;
+        return str.length === 0 ? 'None' : str;
       });
 
       const neverLived = bookInfo.filter(e => !e.match.length);
       $tooltip.select("[data-js='tooltip__setting'] span").text(() => {
         const locations = neverLived.map(g => g.location);
-        return locations.join('; ');
+        const totalLocs = locations.join('; ');
+        return totalLocs.length === 0 ? 'None' : totalLocs;
       });
 
       // $tooltip
