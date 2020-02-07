@@ -52,6 +52,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     // helper functions
     function handleBookHover(d) {
       handleMouseOut();
+      $tooltip.classed('is-hidden', false);
       const allBooks = $sel.selectAll('.book');
 
       const hovered = allBooks
@@ -146,15 +147,10 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         const totalLocs = locations.join('; ');
         return totalLocs.length === 0 ? 'None' : totalLocs;
       });
-
-      // $tooltip
-      //   .select("[data-js='tooltip__distance'] span")
-      //   .text(`${Math.round(d.distance)} miles`);
-
-      // TODO search for all loc matches in data-loc
     }
 
     function handleMouseOut() {
+      $tooltip.classed('is-hidden', true);
       $sel
         .selectAll('.connection__lived')
         .classed('is-dimmed', false)
