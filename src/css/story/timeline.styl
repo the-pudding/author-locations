@@ -17,6 +17,20 @@
 	.intro__dek
 		margin 0
 
+	.legend
+		margin 0 auto 
+	.legend__desktop 
+		display none 
+		+mq('bp-4')
+			display block 
+			max-width 660px 
+	.legend__mobile 
+		display block
+		max-width 300px
+		+mq('bp-4')
+			display none
+			
+
 	.author__figure
 		margin 1rem auto 2rem auto
 
