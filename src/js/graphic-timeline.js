@@ -16,17 +16,20 @@ const charts = [];
 
 function findMatches(d) {
   const placeArr = d.match.split(';').map(e => e.trim());
-  const matches = unnestedAuthors
-    .filter(
-      e =>
-        e.slug === d.slug &&
-        placeArr.includes(e.location) &&
-        d.pub_year > e.start_year
-    )
+  const thisAuthor = unnestedAuthors
+    .filter(e => e.slug === d.slug)
+    .sort((a, b) => d3.ascending(a.start_age, b.start_age))
+    .map((e, i) => ({
+      ...e,
+      number: i + 1,
+    }));
+  const matches = thisAuthor
+    .filter(e => placeArr.includes(e.location) && d.pub_year > e.start_year)
     .map(e => ({
       pub_age: d.pub_age,
       location: e.location.trim(),
       mid: e.mid,
+      number: e.number,
     }))
     .sort((a, b) => d3.descending(a.mid, b.mid));
   // this is where most recent matches.pop() was
@@ -68,7 +71,7 @@ function cleanAuthors(data) {
   birthYearMap = new Map(born);
 
   const clean = data
-    .map(d => ({
+    .map((d, i) => ({
       ...d,
       location: d.location.trim(),
       start_year: +d.start_year,

@@ -16,6 +16,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     let data = $sel.datum();
 
     const authorLocations = data.filteredAuthors[0].values;
+
     const books = data.filteredBooks[0].values;
     const { oldest } = data;
     // dimension stuff
@@ -122,18 +123,33 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .classed('is-dimmed', false)
         .classed('match', true);
 
+      // matching numbers
+      const numbers = $sel.selectAll('.author__numbers');
+      numbers
+        .filter((d, i, n) => {
+          const thisLoc = d3.select(n[i]).attr('data-loc');
+          const check = allLocs.includes(thisLoc) && d.start_age <= year;
+          return check;
+        })
+        .classed('is-hidden', false);
+
       // update tooltip
       const bookInfo = e.value.values;
+
       $tooltip.select("[data-js='tooltip__book'] span").text(bookInfo[0].title);
       $tooltip.select("[data-js='tooltip__residence'] span").text(f => {
         const allMatches = bookInfo
           .filter(g => g.match_locs.length)
-          .map(g => {
+          .map((g, index) => {
             const match = g.match_locs
-              .map(h => {
-                return h.location;
+              .sort((a, b) => d3.ascending(a.number, b.number))
+              .map((h, index) => {
+                const numString = `${h.number}. ${h.location}`;
+                return numString;
               })
-              .filter(g => g);
+              .filter(h => {
+                return h;
+              });
             return match.join('; ');
           });
         const str = allMatches.join('; ');
@@ -162,6 +178,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
         .classed('match', false);
       $sel.selectAll('.book').classed('is-dimmed', false);
       $sel.selectAll('.book__never').classed('is-dimmed', false);
+      $sel.selectAll('.author__numbers').classed('is-hidden', true);
     }
 
     const Chart = {
@@ -363,6 +380,29 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           )
           .classed('matched', d => mids.includes(d.mid))
           .attr('data-mid', d => d.mid)
+          .attr('data-num', (d, i) => i + 1)
+          .attr('data-loc', d => d.location);
+
+        $authors
+          .selectAll('.author__numbers')
+          .data(authorLocations, d => d.start_age)
+          .join(enter =>
+            enter.append('text').attr('class', 'author__numbers is-hidden')
+          )
+          .text((d, i) => i + 1)
+          .attr('text-anchor', 'middle')
+          .attr('alignment-baseline', 'middle')
+          .attr('transform', d =>
+            vertical
+              ? `translate(${authorLine + barHeight / 2}, ${scaleY(d.mid)})`
+              : `translate(${scaleX(d.mid)}, ${authorLine + barHeight / 2})`
+          )
+          .classed('always-hidden', d => {
+            const tooSmall = vertical
+              ? scaleY(d.end_age) - scaleY(d.start_age) < 16
+              : scaleX(d.end_age) - scaleX(d.start_age) < 16;
+            return tooSmall;
+          })
           .attr('data-loc', d => d.location);
 
         // add in book releases (beeswarm to prevent overlap)
@@ -400,6 +440,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .attr('cx', d => d.x)
           .attr('cy', d => d.y)
           .attr('r', RADIUS)
+
           .attr('data-loc', d => {
             const vals = d.value.values;
             const locMatches = vals.map(e => e.match);
