@@ -14,7 +14,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
     // dom elements
     const $chart = d3.select(el);
     const $tooltip = $chart.select('[data-js="figure__tooltip"]');
-    const $main = d3.select('main');
+    const $main = d3.select("main");
     let $svg = null;
     let $axis = null;
     let $vis = null;
@@ -52,40 +52,41 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       $tooltip.select("[data-js='tooltip__author'] span").text(d.author_name);
       $tooltip
         .select("[data-js='tooltip__residence'] span")
-        .text(d.residence.join(', '));
+        .text(d.residence.join(", "));
       $tooltip
         .select("[data-js='tooltip__setting'] span")
-        .text(d.setting.join(', '));
+        .text(d.setting.join(", "));
       $tooltip
         .select("[data-js='tooltip__distance'] span")
         .text(`${Math.round(d.distance)} miles`);
 
       const $book = d3.select(this);
       const x = scaleHistX(d.bin * binSize);
-      const y = +$book.attr('data-y');
-      const left = x > width / 2 ? 'auto' : `${x + marginLeft + binSize + 8}px`;
-      const right = x > width / 2 ? `${width - x - marginRight + 4}px` : 'auto';
-      const top = y > height / 2 ? 'auto' : `${y - 1}px`;
-      const bottom = y > height / 2 ? `${height - y}px` : 'auto';
+      const y = +$book.attr("data-y");
+      const left = x > width / 2 ? "auto" : `${x + marginLeft + binSize + 8}px`;
+      const right =
+        x > width / 2 ? `${width - x + marginRight + binSize}px` : "auto";
+      const top = y > height / 2 ? "auto" : `${y - 1}px`;
+      const bottom = y > height / 2 ? `${height - y}px` : "auto";
 
-      $book.select('rect').classed('is-highlight', true);
+      $book.select("rect").classed("is-highlight", true);
 
       if (mobile)
-        $tooltip.classed('is-visible', true).classed('is-mobile', true);
+        $tooltip.classed("is-visible", true).classed("is-mobile", true);
       else
         $tooltip
-          .style('top', top)
-          .style('left', left)
-          .style('bottom', bottom)
-          .style('right', right)
-          .classed('is-mobile', false)
-          .classed('is-visible', true);
+          .style("top", top)
+          .style("left", left)
+          .style("bottom", bottom)
+          .style("right", right)
+          .classed("is-mobile", false)
+          .classed("is-visible", true);
     }
     function handleOut() {
       d3.select(this)
-        .select('rect')
-        .classed('is-highlight', false);
-      $tooltip.classed('is-visible', false);
+        .select("rect")
+        .classed("is-highlight", false);
+      $tooltip.classed("is-visible", false);
     }
     function makeArc({ distance }) {
       const a = scaleArcX(distance) * 0.51;
@@ -98,38 +99,38 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       const $path = d3.select(this);
       const totalLength = $path.node().getTotalLength();
       $path
-        .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
-        .attr('stroke-dashoffset', totalLength);
+        .attr("stroke-dasharray", `${totalLength} ${totalLength}`)
+        .attr("stroke-dashoffset", totalLength);
     }
 
     function enterArc(e) {
-      const $book = e.append('g').attr('class', 'book');
+      const $book = e.append("g").attr("class", "book");
       $book
-        .append('path')
-        .attr('d', makeArc)
+        .append("path")
+        .attr("d", makeArc)
         .each(resetArc);
 
-      $book.append('text').text(d => d.book_title);
+      $book.append("text").text(d => d.book_title);
       return $book;
     }
 
     function enterBin(e) {
-      return e.append('g').attr('class', 'bin');
+      return e.append("g").attr("class", "bin");
     }
 
     function enterHist(e) {
-      const $book = e.append('g').attr('class', 'book');
+      const $book = e.append("g").attr("class", "book");
 
       $book
-        .attr('transform', (d, i) => `translate(0, ${i * rectHeight + offY})`)
-        .style('opacity', 0);
+        .attr("transform", (d, i) => `translate(0, ${i * rectHeight + offY})`)
+        .style("opacity", 0);
 
       $book
-        .append('rect')
-        .attr('x', 0)
-        .attr('y', 0);
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0);
 
-      $book.on('mouseenter', handleEnter).on('mouseout', handleOut);
+      $book.on("mouseenter", handleEnter).on("mouseout", handleOut);
       return $book;
     }
 
@@ -137,18 +138,18 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       // called once at start
       init() {
         $svg = $chart
-          .select('.figure__chart')
-          .append('svg')
-          .attr('class', 'pudding-chart');
+          .select(".figure__chart")
+          .append("svg")
+          .attr("class", "pudding-chart");
 
         // create axis
-        $axis = $svg.append('g').attr('class', 'g-axis');
+        $axis = $svg.append("g").attr("class", "g-axis");
 
         // setup viz group
-        $vis = $svg.append('g').attr('class', 'g-vis');
+        $vis = $svg.append("g").attr("class", "g-vis");
 
-        $vis.append('g').attr('class', 'arc');
-        $vis.append('g').attr('class', 'hist');
+        $vis.append("g").attr("class", "arc");
+        $vis.append("g").attr("class", "hist");
 
         const extentX = d3.extent(data, d => d.distance);
         scaleArcX.domain(extentX).nice();
@@ -169,8 +170,8 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         height = $chart.node().offsetHeight - MARGIN_TOP - MARGIN_BOTTOM;
 
         $svg
-          .attr('width', width + marginLeft + marginRight)
-          .attr('height', height + MARGIN_TOP + MARGIN_BOTTOM);
+          .attr("width", width + marginLeft + marginRight)
+          .attr("height", height + MARGIN_TOP + MARGIN_BOTTOM);
 
         scaleArcX.range([0, width]);
         scaleArcY.range([0, SPLIT * height]);
@@ -184,7 +185,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       // update scales and render chart
       render() {
         // offset chart for margins
-        $vis.attr('transform', `translate(${marginLeft}, ${MARGIN_TOP})`);
+        $vis.attr("transform", `translate(${marginLeft}, ${MARGIN_TOP})`);
 
         const axis = d3
           .axisTop(scaleArcX)
@@ -194,18 +195,18 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         $axis
           .call(axis)
           .attr(
-            'transform',
+            "transform",
             `translate(${marginLeft}, ${MARGIN_TOP + offY - rectHeight})`
           );
 
         $axis
-          .select('.tick text')
-          .attr('text-anchor', 'end')
-          .attr('x', -4);
+          .select(".tick text")
+          .attr("text-anchor", "end")
+          .attr("x", -4);
 
         const filteredData = data.filter(filter).map(d => ({
           ...d,
-          highlight: d.book_title === highlight,
+          highlight: d.book_title === highlight
         }));
 
         const nestedData = d3
@@ -219,51 +220,51 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
         });
 
         const $arcBook = $vis
-          .select('.arc')
-          .selectAll('.book')
+          .select(".arc")
+          .selectAll(".book")
           .data(filteredData, d => d.book_title)
           .join(enterArc);
 
         $arcBook
-          .select('path')
-          .attr('transform', () => `translate(0, ${scaleArcY.range()[1]})`)
+          .select("path")
+          .attr("transform", () => `translate(0, ${scaleArcY.range()[1]})`)
           .transition()
           .delay((d, i) => (filteredData.length > 2 ? d.bin * 20 : 0))
           .duration(DUR)
           .ease(d3.easeCubicInOut)
-          .attr('stroke-dashoffset', 0);
+          .attr("stroke-dashoffset", 0);
 
         const $histBin = $vis
-          .select('.hist')
-          .attr('transform', `translate(${binSize / 2}, 0)`)
-          .selectAll('.bin')
+          .select(".hist")
+          .attr("transform", `translate(${binSize / 2}, 0)`)
+          .selectAll(".bin")
           .data(nestedData, d => d.key)
           .join(enterBin);
 
-        $histBin.attr('transform', d => {
+        $histBin.attr("transform", d => {
           const x = scaleHistX(+d.key * binSize) - binSize / 2;
           return `translate(${x}, 0)`;
         });
 
         const $histBook = $histBin
-          .selectAll('.book')
+          .selectAll(".book")
           .data(d => d.values, d => d.book_title)
           .join(enterHist);
 
         $histBook
-          .select('rect')
-          .attr('width', scaleHistX.bandwidth())
-          .attr('height', rectHeight)
-          .classed('is-highlight', d => d.highlight);
+          .select("rect")
+          .attr("width", scaleHistX.bandwidth())
+          .attr("height", rectHeight)
+          .classed("is-highlight", d => d.highlight);
 
         $histBook
           .transition()
           .duration(DUR)
           .delay((d, i) => (filteredData.length > 2 ? d.bin * 20 : 0))
           .ease(d3.easeCubicInOut)
-          .attr('transform', (d, i) => `translate(0, ${i * rectHeight + offY})`)
-          .attr('data-y', (d, i) => i * rectHeight + offY)
-          .style('opacity', 1);
+          .attr("transform", (d, i) => `translate(0, ${i * rectHeight + offY})`)
+          .attr("data-y", (d, i) => i * rectHeight + offY)
+          .style("opacity", 1);
 
         return Chart;
       },
@@ -282,7 +283,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       highlight(val) {
         highlight = val;
         return Chart;
-      },
+      }
     };
     Chart.init();
 
