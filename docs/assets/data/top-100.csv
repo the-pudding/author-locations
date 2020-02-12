@@ -2,25 +2,24 @@ book_title,author_name,setting,nearest_setting_lon,nearest_setting_lat,residence
 "In Search of Lost Time (Volume #1, Swann's Way)",Marcel Proust,"Illiers-Combray, France",1.245351,48.29942699999999,"Illiers-Combray, France",1.245351,48.29942699999999,0
 "In Search of Lost Time (Volume #1, Swann's Way)",Marcel Proust,"Paris, France",2.3522219,48.856614,"Paris, France",2.3522219,48.856614,0
 Ulysses,James Joyce,"Dublin, Ireland",-6.2603097,53.3498053,"Dublin, Ireland",-6.2603097,53.3498053,0
-The Great Gatsby,F. Scott Fitzgerald,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
+The Great Gatsby,F. Scott Fitzgerald,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
 One Hundred Years of Solitude,Gabriel Garcia Marquez,"Aracataca, Colombia",-74.186103,10.591925,"Aracataca, Colombia",-74.186103,10.591925,0
-The Catcher in the Rye,J. D. Salinger,"Wayne, PA, United States",-75.3698895,40.0415996,"Wayne, PA, United States",-75.3698895,40.0415996,0
-The Catcher in the Rye,J. D. Salinger,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
-The Sound and the Fury,William Faulkner,"Oxford, MS, United States",-89.5192484,34.3664951,"Oxford, MS, United States",-89.5192484,34.3664951,0
+The Catcher in the Rye,J. D. Salinger,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
+The Sound and the Fury,William Faulkner,"Oxford, MS",-89.51863499999999,34.3668299,"Oxford, MS",-89.51863499999999,34.3668299,0
 To the Lighthouse,Virginia Woolf,"Skye, Scotland",-6.2155023,57.2736278,"London, England",-0.1277583,51.5073509,467.78
 1984,George Orwell,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
-Catch-22,Joseph Heller,"Santa Ana, CA, United States",-117.867653,33.7454725,"Los Angeles, CA, United States",-118.2436849,34.0522342,30.27
-The Grapes of Wrath,John Steinbeck,"Bakersfield, CA, United States",-119.0187125,35.3732921,"Salinas, CA, United States",-121.6555013,36.6777372,172.91
-"Absalom, Absalom!",William Faulkner,"Oxford, MS, United States",-89.5192484,34.3664951,"Oxford, MS, United States",-89.5192484,34.3664951,0
-Invisible Man,Ralph Ellison,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
+Catch-22,Joseph Heller,"Santa Ana, CA",-117.867653,33.7454725,"Los Angeles, CA",-118.2436849,34.0522342,30.27
+The Grapes of Wrath,John Steinbeck,"Bakersfield, CA",-119.0187125,35.3732921,"Salinas, CA",-121.6555013,36.6777372,172.91
+"Absalom, Absalom!",William Faulkner,"Oxford, MS",-89.51863499999999,34.3668299,"Oxford, MS",-89.51863499999999,34.3668299,0
+Invisible Man,Ralph Ellison,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
 Mrs. Dalloway,Virginia Woolf,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
-Beloved,Toni Morrison,"Cincinnati, OH, United States",-84.5120196,39.1031182,"Lorain, OH, United States",-82.1823746,41.452819,203.77
+Beloved,Toni Morrison,"Cincinnati, OH",-84.5120196,39.1031182,"Lorain, OH",-82.1823746,41.452819,203.77
 The Stranger,Albert Camus,"Algiers, Algeria",3.0587561,36.753768,"Algiers, Algeria",3.0587561,36.753768,0
 To Kill a Mockingbird,Harper Lee,"Monroeville, Alabama",-87.32470769999999,31.5279399,"Monroeville, Alabama",-87.32470769999999,31.5279399,0
 A Portrait of the Artist as a Young Man,James Joyce,"Dublin, Ireland",-6.2603097,53.3498053,"Dublin, Ireland",-6.2603097,53.3498053,0
 The Sun Also Rises,Ernest Hemingway,"Paris, France",2.3522219,48.856614,"Paris, France",2.3522219,48.856614,0
 The Sun Also Rises,Ernest Hemingway,"Madrid, Spain",-3.7037902,40.4167754,"Madrid, Spain",-3.7037902,40.4167754,0
-As I Lay Dying,William Faulkner,"Oxford, MS, United States",-89.5192484,34.3664951,"Oxford, MS, United States",-89.5192484,34.3664951,0
+As I Lay Dying,William Faulkner,"Oxford, MS",-89.51863499999999,34.3668299,"Oxford, MS",-89.51863499999999,34.3668299,0
 Midnight's Children,Salman Rushdie,India,78.96288,20.593684,"Mumbai, India",72.8776559,19.0759837,409.59
 A Passage to India,E. M. Forster,"Maunath Bhanjan, India",83.55623659999999,25.9431287,"Dewas, India",76.0534454,22.9675929,515.17
 The Magic Mountain,Thomas Mann,"Davos, Switzerland",9.835970099999999,46.8027453,"Davos, Switzerland",9.835970099999999,46.8027453,0
@@ -33,81 +32,81 @@ For Whom the Bell Tolls,Ernest Hemingway,"Segovia, Spain",-4.108806899999999,40.
 Under the Volcano,Malcolm Lowry,"Cuernavaca, Mexico",-99.22156590000002,18.9242095,"Cuernavaca, Mexico",-99.22156590000002,18.9242095,0
 Brave New World,Aldous Huxley,"London, England",-0.1277583,51.5073509,"Windsor, England",-0.613576,51.4817279,21
 Journey to the End of The Night,Louis-Ferdinand Céline,"Paris, France",2.3522219,48.856614,"Paris, France",2.3522219,48.856614,0
-Gone with the Wind,Margaret Mitchell,"Atlanta, GA, United States",-84.3879824,33.7489954,"Atlanta, GA, United States",-84.3879824,33.7489954,0
+Gone with the Wind,Margaret Mitchell,"Atlanta, GA",-84.3879824,33.7489954,"Atlanta, GA",-84.3879824,33.7489954,0
 Sons and Lovers,D. H. Lawrence,"Nottinghamshire, England",-0.9936305999999998,53.100319,"Eastwood, England",-1.308544,53.01811499999999,14.27
-Slaughterhouse-Five,Kurt Vonnegut,"Schenectady, NY, United States",-73.9395687,42.8142432,"Schenectady, NY, United States",-73.9395687,42.8142432,0
-On the Road,Jack Kerouac,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
-The Color Purple,Alice Walker,"Georgia, United States",-82.9000751,32.1656221,"Eatonton, GA, United States",-83.3884961,33.3267997,85.2
+Slaughterhouse-Five,Kurt Vonnegut,"Schenectady, NY",-73.9395687,42.8142432,"Schenectady, NY",-73.9395687,42.8142432,0
+On the Road,Jack Kerouac,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
+The Color Purple,Alice Walker,Georgia,-82.9000751,32.1656221,"Eatonton, GA",-83.3884961,33.3267997,85.2
 The Tin Drum,Gunter Grass,"Gdansk, Poland",18.6466384,54.35202520000001,"Gdansk, Poland",18.6466384,54.35202520000001,0
 The Tin Drum,Gunter Grass,"Dusselsorf, Germany",6.7734556,51.2277411,"Dusseldorf, Germany",6.7734556,51.2277411,0
-The Age of Innocence,Edith Wharton,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
+The Age of Innocence,Edith Wharton,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
 Howards End,E. M. Forster,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
 Howards End,E. M. Forster,"Hertfordshire, England",-0.2376744,51.80978229999999,"Hertfordshire, England",-0.2376744,51.80978229999999,0
 The Master and Margarita,Mikhail Bulgakov,"Moscow, Russia",37.6172999,55.755826,"Moscow, Russia",37.6172999,55.755826,0
-All the King's Men,Robert Penn Warren,"Louisiana, United States",-91.96233269999999,30.9842977,"Baton Rouge, LA, United States",-91.18714659999999,30.4514677,59.02
+All the King's Men,Robert Penn Warren,Louisiana,-91.96233269999999,30.9842977,"Baton Rouge, LA",-91.18714659999999,30.4514677,59.02
 A Clockwork Orange,Anthony Burgess,England,-1.1743197,52.3555177,"Banbury, England",-1.339775,52.0629009,21.42
-Native Son,Richard Wright,"Chicago, IL, United States",-87.6297982,41.8781136,"Chicago, IL, United States",-87.6297982,41.8781136,0
-The Wind in the Willows,Kenneth Grahame,"Thames Valley, England",-0.8918457999999999,51.594902,"Cookham, England",-0.707741,51.558437,8.31
-My Antonia,Willa Cather,"Red Cloud, NE, United States",-98.51958909999999,40.0890046,"Red Cloud, NE, United States",-98.51958909999999,40.0890046,0
-My Antonia,Willa Cather,"Lincoln, NE, United States",-96.7025955,40.813616,"Lincoln, NE, United States",-96.7025955,40.813616,0
-The Moviegoer,Walker Percy,"New Orleans, LA, United States",-90.0715323,29.95106579999999,"New Orleans, LA, United States",-90.0715323,29.95106579999999,0
+Native Son,Richard Wright,"Chicago, IL",-87.6297982,41.8781136,"Chicago, IL",-87.6297982,41.8781136,0
+The Wind in the Willows,Kenneth Grahame,"Thames Valley, England",-1.2464674,51.7612056,"Cookham, England",-0.707741,51.558437,27.04
+My Antonia,Willa Cather,"Red Cloud, NE",-98.51958909999999,40.0890046,"Red Cloud, NE",-98.51958909999999,40.0890046,0
+My Antonia,Willa Cather,"Lincoln, NE",-96.7025955,40.813616,"Lincoln, NE",-96.7025955,40.813616,0
+The Moviegoer,Walker Percy,"New Orleans, LA",-90.0715323,29.95106579999999,"New Orleans, LA",-90.0715323,29.95106579999999,0
 Rebecca,Daphne du Maurier,"Menabilly, England",-4.673951,50.32652,"Fowey, England",-4.636525,50.33499,1.75
 The Golden Notebook,Doris Lessing,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
-Their Eyes Were Watching God,Zora Neale Hurston,"Eatonville, FL, United States",-81.38589139999999,28.6183364,"Eatonville, FL",-81.38589139999999,28.6183364,0
-"Rabbit, Run",John Updike,Pennsylvania,-77.1945247,41.2033216,"Berks County, PA, United States",-75.9927652,40.3451566,86.52
+Their Eyes Were Watching God,Zora Neale Hurston,"Eatonville, FL",-81.38589139999999,28.6183364,"Eatonville, FL",-81.38589139999999,28.6183364,0
+"Rabbit, Run",John Updike,Pennsylvania,-77.1945247,41.2033216,"Berks County, PA",-75.9927652,40.3451566,86.52
 Orlando: A Biography,Virginia Woolf,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
 Atonement,Ian McEwan,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
 Buddenbrooks,Thomas Mann,"Lubeck, Germany",10.6865593,53.8654673,"Lubeck, Germany",10.6865593,53.8654673,0
-The Handmaid's Tale,Margaret Atwood,"Boston, MA, United States",-71.0588801,42.3600825,"Boston, MA, United States",-71.0588801,42.3600825,0
+The Handmaid's Tale,Margaret Atwood,"Boston, MA",-71.0588801,42.3600825,"Boston, MA",-71.0588801,42.3600825,0
 The Waves,Virginia Woolf,England,-1.1743197,52.3555177,"London, England",-0.1277583,51.5073509,73.72
 The Call of the Wild,Jack London,"Yukon, Canada",-135,64.2823274,"Yukon, Canada",-135,64.2823274,0
 Women in Love,D. H. Lawrence,"Derby, England",-1.4746186,52.9225301,"Eastwood, England",-1.308544,53.01811499999999,9.57
-A Confederacy of Dunces,John Kennedy Toole,"New Orleans, LA, United States",-90.0715323,29.95106579999999,"New Orleans, LA, United States",-90.0715323,29.95106579999999,0
+A Confederacy of Dunces,John Kennedy Toole,"New Orleans, LA",-90.0715323,29.95106579999999,"New Orleans, LA",-90.0715323,29.95106579999999,0
 White Teeth,Zadie Smith,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
-American Pastoral,Philip Roth,"Newark, NJ, United States",-74.1723667,40.735657,"Newark, NJ, United States",-74.1723667,40.735657,0
-The Corrections,Jonathan Franzen,"St. Louis, MO, United States",-90.19940419999999,38.6270025,"St. Louis, MO, United States",-90.19940419999999,38.6270025,0
-The Corrections,Jonathan Franzen,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
-An American Tragedy,Theodore Dreiser,"Chicago, IL, United States",-87.6297982,41.8781136,"Chicago, IL, United States",-87.6297982,41.8781136,0
+American Pastoral,Philip Roth,"Newark, NJ",-74.1723667,40.735657,"Newark, NJ",-74.1723667,40.735657,0
+The Corrections,Jonathan Franzen,"St. Louis, MO",-90.19940419999999,38.6270025,"St. Louis, MO",-90.19940419999999,38.6270025,0
+The Corrections,Jonathan Franzen,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
+An American Tragedy,Theodore Dreiser,"Chicago, IL",-87.6297982,41.8781136,"Chicago, IL",-87.6297982,41.8781136,0
 A Room with a View,E. M. Forster,"Holmbury St Mary, England",-0.410101,51.186213,"Weybridge, England",-0.457904,51.3716269,12.99
 The Ambassadors,Henry James,"Paris, France",2.3522219,48.856614,"Paris, France",2.3522219,48.856614,0
 Zeno's Conscience,Italo Svevo,"Trieste, Italy",13.7768182,45.6495264,"Trieste, Italy",13.7768182,45.6495264,0
-The Stand,Stephen King,"Boulder, CO, United States",-105.2705456,40.0149856,"Boulder, CO, United States",-105.2705456,40.0149856,0
-Rabbit is Rich,John Updike,Pennsylvania,-77.1945247,41.2033216,"Berks County, PA, United States",-75.9927652,40.3451566,86.52
-Of Mice and Men,John Steinbeck,"Soledad, California",-121.3263187,36.424687,"Salinas, CA, United States",-121.6555013,36.6777372,25.32
-The Plague,Albert Camus,"Oran, Algeria",-0.6307988,35.6970697,"Algiers, Algeria",3.0587561,36.753768,218.45
+The Stand,Stephen King,"Boulder, CO",-105.2705456,40.0149856,"Boulder, CO",-105.2705456,40.0149856,0
+Rabbit is Rich,John Updike,Pennsylvania,-77.1945247,41.2033216,"Berks County, PA",-75.9927652,40.3451566,86.52
+Of Mice and Men,John Steinbeck,"Soledad, California",-121.3263187,36.424687,"Salinas, CA",-121.6555013,36.6777372,25.32
+The Plague,Albert Camus,"Oran, Algeria",-0.6349319,35.6987388,"Algiers, Algeria",3.0587561,36.753768,218.62
 Wide Sargasso Sea,Jean Rhys,"Massacre, Dominica",-61.389566,15.3490007,"Roseau, Dominica",-61.37935539999999,15.3091676,2.84
 The Leopard,Giuseppe Tomasi di Lampedusa,"Sicily, Italy",14.0153557,37.5999938,"Sicily, Italy",14.0153557,37.5999938,0
-The Remains of the Day,Kazuo Ishiguro,"Devon, England",-3.530875,50.7155591,"Surrey, England",-0.5599501,51.31475930000001,135.75
+The Remains of the Day,Kazuo Ishiguro,"Oxford, England",-1.2577263,51.7520209,"Surrey, England",-0.5599501,51.31475930000001,42.62
 2666,Roberto Bolano,"Ciudad Juárez, Mexico",-106.4245478,31.6903638,"Mexico City, Mexico",-99.133208,19.4326077,961.52
 Tender Is the Night,F. Scott Fitzgerald,Switzerland,8.227511999999999,46.818188,"Paris, France",2.3522219,48.856614,306.96
-Rabbit at Rest,John Updike,Florida,-81.5157535,27.6648274,"Berks County, PA, United States",-75.9927652,40.3451566,932
-Light in August,William Faulkner,"Oxford, MS, United States",-89.5192484,34.3664951,"Oxford, MS, United States",-89.5192484,34.3664951,0
-A Tree Grows in Brooklyn,Betty Smith,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
+Rabbit at Rest,John Updike,Florida,-81.5157535,27.6648274,"Berks County, PA",-75.9927652,40.3451566,932
+Light in August,William Faulkner,"Oxford, MS",-89.51863499999999,34.3668299,"Oxford, MS",-89.51863499999999,34.3668299,0
+A Tree Grows in Brooklyn,Betty Smith,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
 Dubliners,James Joyce,"Dublin, Ireland",-6.2603097,53.3498053,"Dublin, Ireland",-6.2603097,53.3498053,0
 Pedro Paramo,Juan Rulfo,"Comala, Mexico",-103.7549847,19.3190634,"Guadalajara, Mexico",-103.3496092,20.6596988,96.4
-A Prayer for Owen Meany,John Irving,"Exeter, NH, United States",-70.9477546,42.9814292,"Exeter, NH, United States",-70.9477546,42.9814292,0
+A Prayer for Owen Meany,John Irving,"Exeter, NH",-70.9477546,42.9814292,"Exeter, NH",-70.9477546,42.9814292,0
 A Prayer for Owen Meany,John Irving,"Toronto, Canada",-79.3831843,43.653226,"Toronto, Canada",-79.3831843,43.653226,0
-A Prayer for Owen Meany,John Irving,"Durham, NH, United States",-70.9264393,43.1339545,"Durham, NH, United States",-70.9264393,43.1339545,0
+A Prayer for Owen Meany,John Irving,"Durham, NH",-70.9264393,43.1339545,"Durham, NH",-70.9264393,43.1339545,0
 Harry Potter And The Philosopher's Stone,J. K. Rowling,"London, England",-0.1277583,51.5073509,"London, England",-0.1277583,51.5073509,0
-The Adventures of Augie March,Saul Bellow,"Chicago, IL, United States",-87.6297982,41.8781136,"Chicago, IL, United States",-87.6297982,41.8781136,0
+The Adventures of Augie March,Saul Bellow,"Chicago, IL",-87.6297982,41.8781136,"Chicago, IL",-87.6297982,41.8781136,0
 The Brief Wondrous Life of Oscar Wao,Junot Diaz,"Santo Domingo, Dominican Republic",-69.93121169999999,18.4860575,"Santo Domingo, Dominican Republic",-69.93121169999999,18.4860575,0
-The Brief Wondrous Life of Oscar Wao,Junot Diaz,"New Brunswick, NJ, United States",-74.4518188,40.4862157,"New Brunswick, NJ, United States",-74.4518188,40.4862157,0
+The Brief Wondrous Life of Oscar Wao,Junot Diaz,"New Brunswick, NJ",-74.4518188,40.4862157,"New Brunswick, NJ",-74.4518188,40.4862157,0
 The Prime of Miss Jean Brodie,Muriel Spark,"Edinburgh, Scotland",-3.188267,55.953252,"Edinburgh, Scotland",-3.188267,55.953252,0
 Never Let Me Go,Kazuo Ishiguro,England,-1.1743197,52.3555177,"London, England",-0.1277583,51.5073509,73.72
 Independent People,Halldor Laxness,Iceland,-19.020835,64.963051,"Reykjavik, Iceland",-21.9426354,64.146582,103.57
-One Flew Over the Cuckoo's Nest,Ken Kesey,"OR, United States",-120.5542012,43.8041334,"Pleasant Hill, OR, United States",-122.9329131,43.9674304,119.12
-The Heart Is A Lonely Hunter,Carson McCullers,"GA, United States",-82.9000751,32.1656221,"Columbus, GA, United States",-84.9877094,32.4609764,123.74
+One Flew Over the Cuckoo's Nest,Ken Kesey,OR,-95.7083131,37.2242358,"La Junta, CO",-103.5438321,37.9850091,432.46
+The Heart Is A Lonely Hunter,Carson McCullers,GA,-82.9000751,32.1656221,"Columbus, GA",-84.9877094,32.4609764,123.74
 Austerlitz,W. G. Sebald,"Bala, Wales",-3.601584,52.909911,"Manchester, England",-2.2426305,53.4807593,68.78
 Berlin Alexanderplatz,Alfred Doblin,"Berlin, Germany",13.404954,52.52000659999999,"Berlin, Germany",13.404954,52.52000659999999,0
-The Amazing Adventures of Kavalier and Clay,Michael Chabon,"New York City, NY, United States",-74.0059728,40.7127753,"Columbia, MD, United States",-76.86104619999999,39.2037144,183.86
+The Amazing Adventures of Kavalier and Clay,Michael Chabon,"New York City, NY",-74.0059728,40.7127753,"Columbia, MD",-76.86104619999999,39.2037144,183.86
 Middlesex,Jeffrey Eugenides,"Detroit, Michigan",-83.0457538,42.331427,"Detroit, Michigan",-83.0457538,42.331427,0
 Middlesex,Jeffrey Eugenides,"Berlin, Germany",13.404954,52.52000659999999,"Berlin, Germany",13.404954,52.52000659999999,0
-The Fountainhead,Ayn Rand,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
+The Fountainhead,Ayn Rand,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
 A House for Mr. Biswas,V. S. Naipaul,"Chaguanas, Trinidad and Tobago",-61.39685979999999,10.5331201,"Chaguanas, Trinidad and Tobago",-61.39685979999999,10.5331201,0
 A House for Mr. Biswas,V. S. Naipaul,"Port of Spain, Trinidad and Tobago",-61.5142371,10.6495918,"Port of Spain, Trinidad and Tobago",-61.5142371,10.6495918,0
 The Wind-Up Bird Chronicle,Haruki Murakami,"Tokyo, Japan",139.6503106,35.6761919,"Tokyo, Japan",139.6503106,35.6761919,0
 Possession,A. S. Byatt,England,-1.1743197,52.3555177,"Oxford, England",-1.2577263,51.7520209,41.9
 Love in the Time of Cholera,Gabriel Garcia Marquez,"Cartagena, Colombia",-75.4794257,10.3910485,"Barranquilla, Colombia",-74.80698129999999,11.0041072,62.35
-The House of Mirth,Edith Wharton,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
-Atlas Shrugged,Ayn Rand,"New York City, NY, United States",-74.0059728,40.7127753,"New York City, NY, United States",-74.0059728,40.7127753,0
+The House of Mirth,Edith Wharton,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
+Atlas Shrugged,Ayn Rand,"New York City, NY",-74.0059728,40.7127753,"New York City, NY",-74.0059728,40.7127753,0
 The House of the Spirits,Isabel Allende,Chile,-71.542969,-35.675147,"Santiago, Chile",-70.6692655,-33.4488897,161.83
