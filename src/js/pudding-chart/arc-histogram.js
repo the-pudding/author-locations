@@ -66,7 +66,7 @@ d3.selection.prototype.puddingChartArcHistogram = function init(options) {
       const left = x > width / 2 ? "auto" : `${x + marginLeft + binSize + 8}px`;
       const right =
         x > width / 2 ? `${width - x + marginRight + binSize}px` : "auto";
-      const top = y > height / 2 ? "auto" : `${y - 1}px`;
+      const top = y > height / 2 ? "auto" : `${y - 1 + MARGIN_TOP}px`;
       const bottom = y > height / 2 ? `${height - y}px` : "auto";
 
       $book.select("rect").classed("is-highlight", true);
