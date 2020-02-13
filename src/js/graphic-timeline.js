@@ -1,6 +1,6 @@
 /* global d3 */
-import loadData from './load-data';
-import './pudding-chart/timeline';
+import loadData from "./load-data";
+import "./pudding-chart/timeline";
 
 const $section = d3.select('[data-js="timeline"]');
 const $figures = $section.selectAll('[data-js="figure__chart"]');
@@ -15,13 +15,13 @@ let unnestedAuthors = null;
 const charts = [];
 
 function findMatches(d) {
-  const placeArr = d.match.split(';').map(e => e.trim());
+  const placeArr = d.match.split(";").map(e => e.trim());
   const thisAuthor = unnestedAuthors
     .filter(e => e.slug === d.slug)
     .sort((a, b) => d3.ascending(a.start_age, b.start_age))
     .map((e, i) => ({
       ...e,
-      number: i + 1,
+      number: i + 1
     }));
   const matches = thisAuthor
     .filter(e => placeArr.includes(e.location) && d.pub_year > e.start_year)
@@ -29,7 +29,7 @@ function findMatches(d) {
       pub_age: d.pub_age,
       location: e.location.trim(),
       mid: e.mid,
-      number: e.number,
+      number: e.number
     }))
     .sort((a, b) => d3.descending(a.mid, b.mid));
   // this is where most recent matches.pop() was
@@ -42,11 +42,11 @@ function cleanBooks(data) {
     .map(d => ({
       ...d,
       pub_year: +d.pub_year,
-      pub_age: +d.pub_year - birthYearMap.get(d.slug),
+      pub_age: +d.pub_year - birthYearMap.get(d.slug)
     }))
     .map(d => ({
       ...d,
-      match_locs: findMatches(d),
+      match_locs: findMatches(d)
     }));
 
   const nested = d3
@@ -70,8 +70,6 @@ function cleanAuthors(data) {
 
   birthYearMap = new Map(born);
 
-  console.log({ born, data });
-
   const clean = data
     .map((d, i) => ({
       ...d,
@@ -79,11 +77,11 @@ function cleanAuthors(data) {
       start_year: +d.start_year,
       end_year: +d.end_year,
       start_age: +d.start_year - birthYearMap.get(d.slug),
-      end_age: +d.end_year - birthYearMap.get(d.slug),
+      end_age: +d.end_year - birthYearMap.get(d.slug)
     }))
     .map(d => ({
       ...d,
-      mid: d3.mean([d.start_age, d.end_age]),
+      mid: d3.mean([d.start_age, d.end_age])
     }));
 
   // finding longest lifespan
@@ -107,7 +105,7 @@ function cleanAuthors(data) {
 
 function setupTimelines() {
   const $sel = d3.select(this);
-  const slug = $sel.attr('data-author');
+  const slug = $sel.attr("data-author");
 
   const filteredAuthors = allData.authors
     .filter(d => d.key === slug)
@@ -133,7 +131,7 @@ function resize() {
   charts.forEach(chart => chart.resize().render());
 }
 function init() {
-  loadData(['authors.json', 'books.json']).then(setup);
+  loadData(["authors.json", "books.json"]).then(setup);
 }
 
 export default { init, resize };
