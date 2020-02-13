@@ -146,18 +146,21 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .map((g, index) => {
             const match = g.match_locs
               .sort((a, b) => d3.ascending(a.number, b.number))
-              .map((h, index) => {
-                const numString = `${h.number}. ${h.location}`;
-                return numString;
-              })
+              .map(d => d.location)
+              // .map((h, index) => {
+              //   const numString = `${h.number}. ${h.location}`;
+              //   return numString;
+              // })
               .filter(h => {
                 return h;
               });
-            return match.join("; ");
+            // return match.join("; ");
+            return match;
           });
+        // console.log(allMatches);
 
-        const u = unique(allMatches);
-        u.sort(d3.ascending);
+        const u = unique([].concat(...allMatches));
+        // u.sort(d3.ascending);
         const str = u.join("; ");
 
         return str.length === 0 ? "None" : str;
