@@ -70,6 +70,8 @@ function cleanAuthors(data) {
 
   birthYearMap = new Map(born);
 
+  console.log({ born, data });
+
   const clean = data
     .map((d, i) => ({
       ...d,

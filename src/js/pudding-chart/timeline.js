@@ -13,6 +13,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     const $sel = d3.select(el);
     const $parent = d3.select(el.parentNode);
     const $tooltip = $parent.select('[data-js="figure__tooltip"]');
+    const $prompt = $parent.select('[data-js="figure__prompt"]');
     let data = $sel.datum();
 
     const authorLocations = data.filteredAuthors[0].values;
@@ -54,6 +55,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     function handleBookHover(d) {
       handleMouseOut();
       $tooltip.classed('is-hidden', false);
+      $prompt.classed('is-hidden', true);
       const allBooks = $sel.selectAll('.book');
 
       const hovered = allBooks
@@ -166,6 +168,7 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
     }
 
     function handleMouseOut() {
+      $prompt.classed('is-hidden', false);
       $tooltip.classed('is-hidden', true);
       $sel
         .selectAll('.connection__lived')
@@ -326,11 +329,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                  .axisLeft(scaleY)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisLeft(scaleY)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                  .axisTop(scaleX)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisTop(scaleX)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         $axes
@@ -342,11 +345,11 @@ d3.selection.prototype.puddingChartTimeline = function init(options) {
           .call(
             vertical
               ? d3
-                  .axisRight(scaleY)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisRight(scaleY)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
               : d3
-                  .axisBottom(scaleX)
-                  .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
+                .axisBottom(scaleX)
+                .tickFormat((d, i) => (i === 0 ? `${d} years old` : d))
           );
 
         return Chart;
