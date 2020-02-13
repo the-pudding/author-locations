@@ -63,12 +63,16 @@
 	.arc path
 		fill none
 		stroke $fg
-		stroke-width 2px
+
+		+mq('bp-4')
+			stroke-width 2px
 
 	.hist rect
 		stroke $fg
-		stroke-width 2px
 		fill $secondary
+
+		+mq('bp-4')
+			stroke-width 2px
 
 		&.is-highlight
 			fill $primary

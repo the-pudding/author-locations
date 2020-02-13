@@ -10,7 +10,7 @@
 	.intro__hed
 		margin 0
 		font-family $sans-display
-		set-type-size(large)
+		set-type-size(x-large)
 		padding 1rem 0
 		line-height 1
 
@@ -63,7 +63,10 @@
 	.info__name
 		margin 0
 		font-family $sans-display
-		set-type-size(xx-large, false)
+		set-type-size(x-large, false)
+
+		+mq('bp-4')
+			set-type-size(xx-large, false)
 
 	.info__lifespan
 		margin 0
@@ -74,6 +77,10 @@
 		margin 0 auto
 		padding 1rem
 		max-width $column-width
+		set-type-size(small)
+
+		+mq('bp-4')
+			set-type-size(medium)
 
 	.author__numbers
 		opacity 1
