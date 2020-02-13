@@ -3,44 +3,51 @@
 	max-width 80rem
 
 	.timeline__intro
-		margin 0 auto
-		margin-top 2rem
+		margin 2rem auto
 		padding 1rem
 		max-width $column-width
 
 	.intro__hed
 		margin 0
 		font-family $sans-display
-		set-type-size(xxx-large, false)
-		text-align center
+		set-type-size(large)
+		padding 1rem 0
+		line-height 1
+
+		+mq('bp-4')
+			set-type-size(xx-large)
 
 	.intro__dek
 		margin 0
 
 	.legend
-		margin 0 auto 
-	.legend__desktop 
-		display none 
+		margin 0 auto
+
+	.legend__desktop
+		display none
+
 		+mq('bp-4')
-			display block 
-			max-width 660px 
-	.legend__mobile 
+			display block
+			max-width 660px
+
+	.legend__mobile
 		display block
 		max-width 300px
+
 		+mq('bp-4')
 			display none
-			
 
 	.author__figure
 		margin 1rem auto 2rem auto
 
 	.figure__chart
-		height 300px
-		max-width 60rem
 		margin 0 auto
+		max-width 60rem
+		height 300px
+
 		&.vertical
-			height 450px
 			max-width 30rem
+			height 450px
 
 	.g-axis
 		path
@@ -67,71 +74,82 @@
 		margin 0 auto
 		padding 1rem
 		max-width $column-width
-	
-	.author__numbers 
+
+	.author__numbers
 		opacity 1
 		fill $bg
-		&.always-hidden 
+
+		&.always-hidden
 			opacity 0
+
 		&.is-hidden
 			opacity 0
 
 	rect.author__location
+		opacity 1
 		fill $secondary
 		stroke-width 2px
 		stroke $fg
-		opacity 1
+
 		&.match
 			fill $red
-		&.is-dimmed 
+
+		&.is-dimmed
 			opacity 0.5
 
 	path.connection__lived
+		opacity 1
 		fill none
 		stroke-width 2px
 		stroke $fg
-		opacity 1
+
 		&.is-hidden
 			opacity 0
-		&.is-dimmed 
+
+		&.is-dimmed
 			opacity 0.2
 
-	.book 
-		cursor pointer
+	.book
 		opacity 1
-		&.is-dimmed 
+		cursor pointer
+
+		&.is-dimmed
 			opacity 0.2
-		&__never 
-			fill $red
-			pointer-events none
+
+		&__never
 			opacity 1
+			pointer-events none
+			fill $red
+
 			&.is-dimmed
 				opacity 0.2
 
-	.group__never 
+	.group__never
 		opacity 1
-		&.is-hidden 
+
+		&.is-hidden
 			opacity 0
 
 	.cities__lived
 		opacity 1
-		&.is-hidden 
+
+		&.is-hidden
 			opacity 0
 
 	.figure__tooltip
+		margin 0 auto
+		padding 0.5rem 1rem
+		min-height 135px
+		max-width $column-width
 		border 2px solid $fg
 		background $bg
 		color $fg
 		font-family $sans-display
-		pointer-events none
-		max-width $column-width
-		margin 0 auto
-		min-height 135px
-		padding 0.5rem 1rem
 		opacity 1
-		&.is-hidden 
-			opacity 0
+		pointer-events none
 
+		&.is-hidden
+			opacity 0
 
 		p
 			margin 0
@@ -139,7 +157,6 @@
 
 		span
 			font-weight bold
-		
-	.rect__hover 
+
+	.rect__hover
 		opacity 0
-	
