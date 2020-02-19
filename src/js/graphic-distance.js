@@ -1,8 +1,8 @@
 /* global d3 */
-import 'intersection-observer';
-import scrollama from 'scrollama';
-import loadData from './load-data';
-import './pudding-chart/arc-histogram';
+import "intersection-observer";
+import scrollama from "scrollama";
+import loadData from "./load-data";
+import "./pudding-chart/arc-histogram";
 
 const $section = d3.select('[data-js="distance"]');
 const $figure = $section.select('[data-js="distance__figure"]');
@@ -19,12 +19,12 @@ function updateDimensions() {
   mobile = $section.node().offsetWidth < 960;
   binSize = mobile ? 20 : 10;
   const stepH = Math.floor(window.innerHeight * (mobile ? 1 : 0.825));
-  $figure.style('height', `${window.innerHeight}px`);
-  $step.style('height', `${stepH}px`);
-  $step.style('margin-top', (d, i) =>
+  $figure.style("height", `${window.innerHeight}px`);
+  $step.style("height", `${stepH}px`);
+  $step.style("margin-top", (d, i) =>
     i === 0 ? `${-window.innerHeight * 0.5}px` : 0
   );
-  $step.style('padding-bottom', (d, i) =>
+  $step.style("padding-bottom", (d, i) =>
     i === $step.size() - 1 ? `${window.innerHeight * 1.05}px` : 0
   );
 
@@ -42,29 +42,29 @@ function resize() {
 }
 
 function handleStepEnter({ index }) {
-  $step.classed('is-active', (d, i) => i === index);
+  $step.classed("is-active", (d, i) => i === index);
   if (index === 0)
     chart
-      .filter(d => ['White Teeth'].includes(d.book_title))
-      .highlight('White Teeth')
+      .filter(d => ["White Teeth"].includes(d.book_title))
+      .highlight("White Teeth")
       .render();
   else if (index === 1)
     chart
-      .filter(d => ['White Teeth', '2666'].includes(d.book_title))
-      .highlight('2666')
+      .filter(d => ["White Teeth", "2666"].includes(d.book_title))
+      .highlight("2666")
       .render();
   else if (index === 2)
     chart
       .filter(() => true)
       .highlight()
       .render();
-  else if (index === 3) chart.highlight('Rabbit at Rest').render();
+  else if (index === 3) chart.highlight("Rabbit at Rest").render();
 
   $figure
     .select('[data-js="figure__tooltip"]')
-    .classed('is-active', index === 4);
+    .classed("is-active", index === 4);
 
-  $figure.select('[data-js="figure__chart"]').classed('is-active', index === 4);
+  $figure.select('[data-js="figure__chart"]').classed("is-active", index === 4);
 }
 
 function cleanData(data) {
@@ -72,7 +72,7 @@ function cleanData(data) {
     ...d,
     distance: +d.distance,
     bin: Math.floor(+d.distance / binSize),
-    top: d.book_title === 'White Teeth',
+    top: d.book_title === "White Teeth"
   }));
 
   const nested = d3
@@ -89,7 +89,7 @@ function cleanData(data) {
         setting,
         residence,
         bin,
-        top,
+        top
       };
     })
     .entries(clean)
@@ -100,11 +100,12 @@ function cleanData(data) {
 }
 
 function setupScroller() {
+  const mid = `${Math.floor(window.innerHeight * 0.625)}px`;
   scroller
     .setup({
-      step: '#distance article .step',
-      offset: mobile ? 0.5 : 0.3,
-      debug: false,
+      step: "#distance article .step",
+      offset: mobile ? mid : 0.5,
+      debug: false
     })
     .onStepEnter(handleStepEnter);
 }
@@ -127,7 +128,7 @@ function setup(data) {
 }
 
 function init() {
-  loadData('top-100.csv').then(setup);
+  loadData("top-100.csv").then(setup);
 }
 
 export default { init, resize };
